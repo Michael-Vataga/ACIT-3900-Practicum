@@ -72,6 +72,7 @@ passport.use(
             if (err) throw err;
             if (result.length != 1) {
                 console.log("ERROR: not equal to 1 found");
+                return done(null, false);
             }
             else {
                 bcrypt.compare(password, result[0].password).then(match => {

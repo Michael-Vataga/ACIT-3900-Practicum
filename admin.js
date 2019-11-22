@@ -5,7 +5,7 @@ const fs = require("fs");
 const db = require("./database.js");
 
 const router = express.Router();
- 
+
 // adds file
 // used in admin/webcontent/home
 const upload = (request, response) => {

@@ -15,6 +15,7 @@ const events = require("./event.js");
 const profile = require("./profile.js");
 const admin = require("./admin.js");
 const sendMail = require('./mailgun');
+const speakers = require('./speakers.js');
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.use(passport);
 app.use(profile);
 app.use(admin);
 app.use(queries.router);
+app.use(speakers);
 
 //Checks Account Administrator Status
 checkAdmin = (request, response, next) => {
@@ -67,6 +69,19 @@ checkAdmin_false = (request, response, next) => {
         }
     } else {
         response.redirect('/');
+    }
+};
+
+checkSU = (request, response, next) => {
+    if (request.isAuthenticated()) {
+        if (request.user.isSU == 1) {
+            return next();
+        }
+        else {
+            // response.status(401).json({error: 401, message:'You are not authenticated. Please contact a super user.'});
+            // response.send('You are not authenticated. Please contact a super user.');
+            response.redirect('/admin');
+        }
     }
 };
 
@@ -189,12 +204,7 @@ app.get("/logout", checkAuthentication, (request, response) => {
 
 // Profile
 app.get("/profile/:account_uuid", checkAuthentication, async (request, response) => {
-    if (request.user == undefined) {
-        response.render("profile.hbs");
-    }
-
     let user = request.user;
-
     let profile_uuid = request.params.account_uuid;
 
     response.render("profile.hbs", {
@@ -206,7 +216,6 @@ app.get("/profile/:account_uuid", checkAuthentication, async (request, response)
         firstName: user.firstName,
         lastName: user.lastName,
         companyName: user.companyName,
-        division: user.division,
         plantClassification: user.plantClassification,
         fieldPosition: user.fieldPosition,
         businessPhone: user.businessPhone,
@@ -226,6 +235,14 @@ app.get("/profile/:account_uuid", checkAuthentication, async (request, response)
         }
         return options.inverse(this);
     });
+
+    hbs.registerHelper("defaultDropdown", (formValue, dbValue) => {
+        if (dbValue == formValue) {
+            return "selected";
+        } else {
+            return "";
+        }
+    });
 });
 
 //  Page
@@ -242,26 +259,43 @@ app.get('/about', async (request, response) => {
 
 // Registration Page
 app.get('/registration', checkAuthentication_false, (request, response) => {
+    let inAdminPanel = false;
+
     response.render("registration.hbs", {
         title:"Registration",
         heading: "Registration",
-        action: "/registerUser"
+        action: "/registerUser",
+        inAdminPanel: inAdminPanel
     });
 });
 
 // Agenda Page
-app.get('/agenda', (request, response) => {
+app.get('/agenda', async (request, response) => {
+    let agendaItems = await queries.getAgendaItems();
+
     response.render("agenda.hbs", {
         title:"Agenda",
-        heading: "Agenda"
+        heading: "Agenda",
+        agendaItems: agendaItems
     });
 });
 
 // Speaker Page
-app.get('/speaker', (request, response) => {
+app.get('/speaker', async (request, response) => {
+    let speakers = await queries.getSpeakers();
+
     response.render("speakers.hbs", {
         title: "Speaker",
-        heading: "Speaker"
+        heading: "Speaker",
+        speakers: speakers
+    });
+});
+
+// Calendar Page
+app.get('/calendar', (request, response) => {
+    response.render("calendar.hbs", {
+        title: "Calendar",
+        heading: "Calendar"
     });
 });
 
@@ -292,27 +326,40 @@ app.get("/rsvp", checkAuthentication, checkAdmin_false, async (request, response
 });
 
 //Admin Page
-app.get('/admin', checkAdmin, (request, response) => {
+app.get('/admin', checkAdmin, async (request, response) => {
+    let feedback = await queries.getAllFeedback();
+
     response.render("administrator/index.hbs", {
         title: "Administrator Panel",
-        heading: "Administrator Panel"
+        heading: "Administrator Panel",
+
+        feedback: feedback
     });
 });
 
 app.get('/admin/events', checkAdmin, async (request, response) => {
     let events = await queries.eventPromise();
     let today = formatDate();
+    let temp_str = '';
 
     for (let i=0; i<events.length; i++){
         events[i].eventDate = formatDate(events[i].eventDate);
-    }
 
+        temp_str = events[i].eventDescription;
+
+        if (temp_str.length > 100) {
+            events[i].eventDescription_short = temp_str.substring(0, 97) + '...';
+        }
+        else {
+            events[i].eventDescription_short = temp_str;
+        }
+    }
     response.render("administrator/events.hbs", {
         title: "Events",
         heading: "Events",
         event: events,
         today: today,
-        event_isActive: true
+        events_isActive: true
     });
 });
 
@@ -320,7 +367,6 @@ app.get('/admin/events/:event_id', checkAdmin, async (request, response) => {
     let event = await queries.getEvent(request.params.event_id);
     let eventAttendees = await queries.getEventAttendees(request.params.event_id);
     let event_uuid = request.params.event_id;
-
     // // formats the input event date
     let eventDate = await event.eventDate;
 
@@ -335,7 +381,7 @@ app.get('/admin/events/:event_id', checkAdmin, async (request, response) => {
         name: event.eventName,
         date: date,
         desc: event.eventDescription,
-        event_isActive: true,
+        events_isActive: true,
         eventAttendees: eventAttendees,
         countAttendees: countAttendees,
         event_uuid: event_uuid,
@@ -371,19 +417,37 @@ app.get('/admin/webcontent/about', checkAdmin, async (request, response) => {
     });
 });
 app.get('/admin/webcontent/agenda', checkAdmin, async (request, response) => {
+    let agendaItems = await queries.getAgendaItems();
+
     response.render("administrator/webcontent/agenda.hbs", {
         title: 'Admin - Agenda',
         heading: 'Manage Agenda Page Content',
         webcontent_agendaisActive: true,
-        webcontent_isActive: true
+        webcontent_isActive: true,
+        agendaItems: agendaItems
     });
 });
 app.get('/admin/webcontent/speakers', checkAdmin, async (request, response) => {
+    let speakers = await queries.getSpeakers();
+    let temp = '';
+
+    for (let i=0; i<speakers.length; i++){
+        temp = speakers[i].biography;
+
+        if (temp.length > 100){
+            speakers[i].biography_short = temp.substring(0, 97) + '...';
+        }
+        else {
+            speakers[i].biography_short = temp;
+        }
+    }
+
     response.render("administrator/webcontent/speaker.hbs", {
         title: 'Admin - Speaker',
         heading: 'Manage Speaker Page Content',
         webcontent_speakersisActive: true,
-        webcontent_isActive: true
+        webcontent_isActive: true,
+        speakers: speakers
     });
 });
 app.get('/admin/webcontent/contact', checkAdmin, async (request, response) => {
@@ -403,7 +467,7 @@ app.get('/admin/webcontent', checkAdmin, async (request, response) => {
     });
 });
 
-app.get('/admin/useraccounts', async (request, response) => {
+app.get('/admin/useraccounts', checkAdmin, async (request, response) => {
     let users = await queries.getAllUsers();
 
     response.render("administrator/useraccounts.hbs", {
@@ -415,8 +479,26 @@ app.get('/admin/useraccounts', async (request, response) => {
     });
 });
 
-app.get('/admin/useraccounts/:account_uuid', async (request, response) => {
+app.get('/admin/adduser', checkAdmin, (request, response) => {
+    let inAdminPanel = true;
+
+    response.render("registration.hbs", {
+        title: "Add a New User",
+        heading: "Add a New User",
+        inAdminPanel: inAdminPanel
+    });
+});
+
+app.get('/admin/useraccounts/:account_uuid', checkAdmin, async (request, response) => {
     let user = await queries.getUser(request.params.account_uuid);
+
+    hbs.registerHelper("defaultDropdown", (formValue, dbValue) => {
+        if (dbValue == formValue) {
+            return "selected";
+        } else {
+            return "";
+        }
+    });
 
     response.render('administrator/user.hbs', {
         title: `${user.firstName} ${user.lastName}'s Profile`,
@@ -427,7 +509,8 @@ app.get('/admin/useraccounts/:account_uuid', async (request, response) => {
     });
 });
 
-app.get('/admin/adminaccount', async (request, response) => {
+app.get('/admin/adminaccount', checkSU, async (request, response) => {
+    let su = await queries.getSU();
     let admins = await queries.getAdmins();
     let nonAdmins = await queries.getNonAdmins();
 
@@ -435,7 +518,7 @@ app.get('/admin/adminaccount', async (request, response) => {
         title: "Admin Account",
         heading: "Manage Administrator Accounts",
         adminacc_isActive: true,
-
+        superusers: su,
         admins: admins,
         nonAdmins: nonAdmins
     });
@@ -444,7 +527,7 @@ app.get('/admin/adminaccount', async (request, response) => {
 //Contact Form Emails
 app.post('/email', (req, res) => {
     const {email, subject, text} = req.body;
-    console.log(req.body)
+    console.log(req.body);
 
     sendMail(email, subject, text, function(err, data) {
         if (err) {
@@ -453,5 +536,11 @@ app.post('/email', (req, res) => {
             res.json({ message: 'Message sent successfully.'});
         }
     });
+});
 
+app.get('/feedback', (request, response) => {
+    response.render("feedback.hbs", {
+        title: "Feedback",
+        heading: "Give us your feedback!"
+    });
 });

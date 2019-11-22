@@ -35,6 +35,9 @@ const editEvent = async (request, response) => {
     let sql = "UPDATE events SET eventName=?, eventDate=?, eventDescription=? WHERE event_uuid=?";
     let values = [name, date, desc, event_uuid];
 
+    console.log(sql);
+    console.log(values);
+
     con.query(sql, values, (err, result) => {
         if (err) {
             throw err;

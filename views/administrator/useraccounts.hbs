@@ -13,25 +13,51 @@
         {{> menu}}
 
         <h1>{{heading}}</h1>
-
-        <div class="jumbotron no_background_colour">
-            <table class="usersTable">
-                <tr>
+        <br><br>
+        <div class="user-account-jumbotron">
+            <button class="collapseButton btn btn-primary" type="button" data-toggle="collapse" data-target="#userFilters" aria-expanded="false" aria-controls="collapseExample">Show Filter</button>
+            <a href="/admin/adduser"/><button class="addNewUserButton btn btn-success" type="button">Add New User</button></a>
+            <br><br>
+            <div class="collapse" id="userFilters">
+                <p>Plant Classifications</p>
+                <input type="radio" style="margin-left: 15px;" id="all" name="plantClassification">Show All
+                <input type="radio" style="margin-left: 15px;" id="Other" name="plantClassification">Other
+                <input type="radio" style="margin-left: 15px;" id="1st Class" name="plantClassification">1st Class
+                <input type="radio" style="margin-left: 15px;" id="2nd Class" name="plantClassification">2nd Class
+                <input type="radio" style="margin-left: 15px;" id="3rd Class" name="plantClassification">3rd Class
+                <input type="radio" style="margin-left: 15px;" id="4th Class" name="plantClassification">4th Class
+                <input type="radio" style="margin-left: 15px;" id="5th Class" name="plantClassification">5th Class
+                <input type="radio" style="margin-left: 15px;" id="RPO" name="plantClassification">RPO
+            </div>
+            <h3>User Accounts</h3>
+            <table class="usersTable table-responsive filetable">
+                <tr class="user_acount_table" style="background-color: white;">
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Company Name</th>
+                    <th>Plant Classification</th>
+                    <th>Field Position</th>
+                    <th>Business Phone</th>
                     <th></th>
                     <th></th>
                 </tr>
 
                 {{#each users}}
-                <tr>
-                    <td><a href="/admin/useraccounts/{{account_uuid}}">{{lastName}}, {{firstName}}</td></a>
-                    <td>{{email}}</td>
-                    <td><a href="/admin/useraccounts/{{account_uuid}}"><button class="btn btn-outline-primary">Edit user</button></a></td>
-                    <td>
+
+                <tr class="user_acount_table" style="background-color: white;">
+                    <td style="width: 15%;"><a style="color: black;" href="/admin/useraccounts/{{account_uuid}}">{{lastName}}, {{firstName}}</td></a>
+                    <td style="width: 15%;">{{email}}</td>
+                    <td style="width: 13%;">{{companyName}}</td>
+                    <td style="width: 10%;" class="plantClassification">{{plantClassification}}</td>
+                    <td style="wdith: 15%;">{{fieldPosition}}</td>
+                    <td style="min-width: 50px;">{{businessPhone}}</td>
+                 
+                    <td style="width: 127px;"><a href="/admin/useraccounts/{{account_uuid}}"><button class="btn btn-outline-primary user_account_button">Edit user</button></a></td>
+
+                    <td style="width: 127px;">
                         <form method="post" action="/deleteUser">
                             <input type="hidden" name="account_uuid" value="{{account_uuid}}">
-                            <button type="submit" class="btn btn-outline-danger">Delete</button>
+                            <button type="submit" class="btn btn-outline-danger user_account_button">Delete</button>
                         </form>
                     </td>
                 </tr>
@@ -40,6 +66,7 @@
         </div>
     </div>
 
+    <script type="text/javascript" src="/js/admin/user_table_filter.js"></script>
 </body>
 {{> footer}}
 </html>

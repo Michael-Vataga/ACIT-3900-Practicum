@@ -1,6 +1,6 @@
 <div class="sidenav">
-    <p class="sidenav_panel ">Admin Panel</p>
-    <a href="/admin/events" {{#if event_isActive}}class="active"{{/if}}>Events</a>
+    <a href="/admin" class="sidenav_panel">Admin Panel</a>
+    <a href="/admin/events" {{#if events_isActive}}class="active"{{/if}}>Events</a>
     <a href="/admin/useraccounts" {{#if ua_isActive}}class="active"{{/if}}>User Accounts</a>
     <a href="/admin/adminaccount" {{#if adminacc_isActive}}class="active"{{/if}}>Administrator Accounts</a>
     
@@ -15,6 +15,6 @@
     </div>
 </div>
 
-{{event_isActive}}
+<p style="display: none;">{{event_isActive}}</p>
 
 <script type="text/javascript" src="/js/admin/navbar.js"></script>

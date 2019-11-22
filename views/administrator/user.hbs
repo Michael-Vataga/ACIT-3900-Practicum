@@ -30,28 +30,25 @@
         <p><label for="companyName"><b>Company Name *</b></label></p>
         <input type="text" name="companyName" value="{{user.companyName}}" placeholder="{{user.companyName}}"required>
 
-        <p><label for="division"><b>Division</b></label></p>
-        <input type="text" name="division" value="{{user.division}}" placeholder="{{user.division}}">
-
-        <p><b>Plant Classification</b></p>
+        <p><b>Plant Classification *</b></p>
         <select name="plantClassification">
-            <option disabled selected value="null_value">select your plant classification</option>
-            <option value="na">N/A</option>
-            <option value="first">1st Class</option>
-            <option value="second">2nd Class</option>
-            <option value="third">3rd Class</option>
-            <option value="fourth">4th Class</option>  
-            <option value="fifth">5th Class</option>
-            <option value="rpo">RPO</option>
+            <option disabled selected value="null_value" {{defaultDropdown "null_value" user.plantClassification}}>select your plant classification</option>
+            <option value="Other" {{defaultDropdown "Other" user.plantClassification}}>Other</option>
+            <option value="1st Class" {{defaultDropdown "1st Class" user.plantClassification}}>1st Class</option>
+            <option value="2nd Class" {{defaultDropdown "2nd Class" user.plantClassification}}>2nd Class</option>
+            <option value="3rd Class" {{defaultDropdown "3rd Class" user.plantClassification}}>3rd Class</option>
+            <option value="4th Class" {{defaultDropdown "4th Class" user.plantClassification}}>4th Class</option>  
+            <option value="5th Class" {{defaultDropdown "5th Class" user.plantClassification}}>5th Class</option>
+            <option value="RPO" {{defaultDropdown "RPO" user.plantClassification}}>RPO</option>
         </select>
 
-        <p><label for="fieldPosition"><b>Field Position</b></label></p>
+        <p><label for="fieldPosition"><b>Field Position *</b></label></p>
         <select name="fieldPosition">
-            <option disabled selected value="null_value">select your position</option>
-            <option value="na">N/A</option>
-            <option value="chiefEngineer">Chief Engineer</option>
-            <option value="shiftEngineer">Shift Engineer</option>
-            <option value="operator">Operator</option>
+            <option disabled selected value="null_value" {{defaultDropdown "null_value" user.fieldPosition}}>select your position</option>
+            <option value="Other" {{defaultDropdown "Other" user.fieldPosition}}>Other</option>
+            <option value="Chief Engineer" {{defaultDropdown "Chief Engineer" user.fieldPosition}}>Chief Engineer</option>
+            <option value="Shift Engineer" {{defaultDropdown "Shift Engineer" user.fieldPosition}}>Shift Engineer</option>
+            <option value="Operator" {{defaultDropdown "Operator" user.fieldPosition}}>Operator</option>
         </select>
 
         <p><label for="businessPhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"><b>Business Phone Number</b> (format: 123-456-7890)</label></p>
@@ -99,10 +96,6 @@
         <input type="text" name="pc_zip" value="{{user.pc_zip}}" placeholder="{{user.pc_zip}}">
 
         <input type="hidden" name="account_uuid" value="{{user.account_uuid}}">
-
-        <br><br>
-
-        <input type="checkbox" name="consent" value="consent"> I consent to distribution of my contact information for networking purposes
 
         <br><br>
 

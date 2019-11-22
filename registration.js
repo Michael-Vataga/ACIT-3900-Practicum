@@ -2,14 +2,14 @@ const db = require('./database.js');
 
 const express = require("express");
 const router = express.Router();
-const uuidv1 = require('uuid/v1');
+const uuidv4 = require('uuid/v4');
 
 const bcrypt = require('bcrypt');
 
 const saltRounds = 10;
 
 const registerUser = async (request, response) => {
-    let uuid = uuidv1();
+    let uuid = uuidv4();
 
     let email = await request.body.email;
     let password = await bcrypt.hash(request.body.password, saltRounds);
@@ -19,7 +19,6 @@ const registerUser = async (request, response) => {
     let lastName = await request.body.lastName;
 
     let companyName = await request.body.companyName;
-    let division = await request.body.division;
     let plantClassification = await request.body.plantClassification;
     let fieldPosition = await request.body.fieldPosition;
 
@@ -35,8 +34,6 @@ const registerUser = async (request, response) => {
     let province_state = await request.body.province_state;
     let pc_zip = await request.body.pc_zip;
 
-    let consent = await request.body.consent;
-
     con = db.getDb();
 
     // checks that an account does NOT already exist
@@ -49,8 +46,8 @@ const registerUser = async (request, response) => {
         }
         else {
             // creates a new account
-            sql = "INSERT INTO accounts (account_uuid, email, password, title, firstName, lastName, companyName, division, plantClassification, fieldPosition, businessPhone, homePhone, cellPhone, addressL1, addressL2, country, city, province_state, pc_zip, consent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            let values = [uuid, email, password, title, firstName, lastName, companyName, division, plantClassification, fieldPosition, businessPhone, homePhone, cellPhone, addressL1, addressL2, country, city, province_state, pc_zip, consent];
+            sql = "INSERT INTO accounts (account_uuid, email, password, title, firstName, lastName, companyName, plantClassification, fieldPosition, businessPhone, homePhone, cellPhone, addressL1, addressL2, country, city, province_state, pc_zip) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            let values = [uuid, email, password, title, firstName, lastName, companyName, plantClassification, fieldPosition, businessPhone, homePhone, cellPhone, addressL1, addressL2, country, city, province_state, pc_zip];
 
             con.query(sql, values, (err, result) => {
                 if (err) throw err;

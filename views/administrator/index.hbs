@@ -9,14 +9,57 @@
     {{> admin_menu}}
 
 
-    <div class="maincontent">
+    <div class="mainlength maincontent">
         {{> menu}}
 
         <h1>{{heading}}</h1>
-    </div>
-    <div class="jumbotron">
-    
-    </div>
+            {{#each feedback}}
+            <table class="table table-striped" id="feedbackTable">
+                <tr>
+                    <th></th>
+                    <th>
+                        1 (Well Below Expectations) - 5 (Well Above Expectations)
+                        <p style="font-size: 75%;"><i>A score of "0" means "Not Applicable"</i></p>
+                    </th>
+                    <th>
+                        <form method="POST" action="/deleteFeedback">
+                            <input type="hidden" name="feedback_id" value={{feedback_id}}>
+                            <button type="submit" class="btn btn-outline-danger">Delete</button>
+                        </form> 
+                    </th>
+                </tr>
+                <tr>
+                    <th>Content of Conference</th>
+                    <td colspan="2">{{content}}</td>
+                </tr>
+                <tr>
+                    <th>Quality of Speaker(s)</th>
+                    <td colspan="2">{{speakerQuality}}</td>
+                </tr>
+                <tr>
+                    <th>Organization of Conference</th>
+                    <td colspan="2">{{organization}}</td>
+                </tr>                                                
+                <tr>
+                    <th>Format of Conference</th>
+                    <td colspan="2">{{format}}</td>
+                </tr> 
+                <tr>
+                    <th>Overall Rating of Conference</th>
+                    <td colspan="2">{{overall_rating}}</td>
+                </tr>
+                <tr>
+                    <th>Relevance to your Occupation</th>
+                    <td colspan="2">{{relevance}}</td>                        
+                </tr>
+                <tr>
+                    <th>Comments</th>
+                    <td colspan="2">{{comments}}</td>                       
+                </tr>                       
+            </table>
+            {{/each}}
+    </div>   
+        
 </body>
 
 {{> footer}}

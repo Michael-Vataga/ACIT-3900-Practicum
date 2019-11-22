@@ -9,14 +9,15 @@
 <body>
     {{> admin_menu}}
     
-    <div class="maincontent">      {{!-- without this class, content and side nav bar will overlap --}}
+    {{!-- without this class, content and side nav bar will overlap --}}
+    <div class="maincontent">
         {{> menu}}
 
     {{!-- Create New Event Form Popup --}}
     <div>
         <h1>
             <span>{{heading}}</span>
-            <button class="add_event_button" type="button" data-toggle="modal" data-target="#createEventForm">Add New Event</button>
+            <button style="margin-right: 2%;" class="add_event_button" type="button" data-toggle="modal" data-target="#createEventForm">Add New Event</button>
         </h1>
     </div>
     <div class="modal fade" id="createEventForm" tabindex="-1" role="dialog" aria-labelledby="createEventFormLabel" aria-hidden="true">
@@ -54,17 +55,17 @@
     <div class="jumbotron no_background_colour">
         <table class="event_table">
             <tr>
-                <th class="event_text">Event Name</th>
-                <th class="event_text">Event Description</th>
-                <th class="event_text">Date</th>
-                <th class="event_text"></th>
-                <th class="event_text"></th>
+                <th class="event_text" style="width: 10%">Event Name</th>
+                <th class="event_text" style="width: 50%;">Event Description</th>
+                <th class="event_text" style="width: 100px;">Date</th>
+                <th class="event_text" style="width: 60px;"></th>
+                <th class="event_text" style="width: 60px;"></th>
             </tr>
 
             {{#each event}}
-            <tr>
+            <tr class="event_tr">
                 <td class="event_text"><a class="event_link" href="/admin/events/{{event_uuid}}">{{eventName}}</a></td>
-                <td class="event_text"><a class="event_link" href="/admin/events/{{event_uuid}}">{{eventDescription}}</a></td>
+                <td class="event_text"><a class="event_link" href="/admin/events/{{event_uuid}}">{{eventDescription_short}}</a></td>
                 <td class="event_text"><a class="event_link" href="/admin/events/{{event_uuid}}">{{eventDate}}</a></td>
                 <td class="event_text">
                     <button class="edit_event_button btn btn-outline-primary" type="button" data-toggle="modal" data-target="#editEventForm{{event_uuid}}">Edit</button>
@@ -80,7 +81,7 @@
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    <input type="hidden" name="event_uuid" value={{event_uuid}}>
+                                    
                                     <div class="modal-body">
                                         <div class="form-group">
                                             <label data-error="wrong" data-success="right" for="eventForm-name">Event Name</label>

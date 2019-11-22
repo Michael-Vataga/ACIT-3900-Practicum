@@ -13,11 +13,12 @@
 
     {{> menu}}
     
-    <h1>{{heading}}</h1>
+    <h1>Event Details</h1>
 
     <br>
+    
+    {{!-- <button type="button" data-toggle="modal" data-target="#editEventForm">Edit Event</button> --}}
 
-    <button type="button" data-toggle="modal" data-target="#editEventForm">Edit Event</button>
     <div class="modal fade" id="editEventForm" tabindex="-1" role="dialog" aria-labelledby="editEventFormLabel" aria-hidden="true">
         <form method="post" action="/editEvent" id="editevent_form">
             <div id="editEvent" class="modal-dialog" role="document">
@@ -53,60 +54,91 @@
 
     <br>
 
-    <h3>Event Description</h3>
-    <p>{{date}}</p>
-    <p>{{desc}}</p>
+    <h3>
+        <span style="margin-left: 2%;">Event name: {{heading}}</span>
+        <button class="edit_single_event_button" type="button" data-toggle="modal" data-target="#editEventForm">Edit Event</button>
+    </h3>
+    <h5 class="single_event_text" id="eventDate">Date: {{date}}</h5>
+    <h5 class="single_event_text">Event Description:</h5>
+    <div class="event_desc_box">
+        <h5 id="eventDesc">{{desc}}</h5>
+    </div>
+
+    <br>
+
+    <a href="#" id="printDoc" class="btn btn-outline-primary">Export Event</a>
+    <div class="embed-responsive embed-responsive-16by9" style="display:none" id="iframediv">
+        <iframe class="embed-responsive-item" src="" id="iframePDF" allowfullscreen></iframe>
+    </div>
     
-    <h3>Attendees</h3>
-    <p>Number of attendees: {{countAttendees}}</p>
-    <p></p><button type="button" data-toggle="modal" data-target="#addAttendeeForm">Add Attendee</button></p>
-    <div class="modal fade" id="addAttendeeForm" tabindex="-1" role="dialog" aria-labelledby="addAttendeeFormLabel" aria-hidden="true">
-        <form method="post" action="/addAttendee">
-            <input type="hidden" name="event_uuid" value={{event_uuid}}>
-            <div id="addAttendee" class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header text-center">
-                        <h4 class="modal-title w-100 font-weight-bold">Add Attendee</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label data-error="wrong" data-success="right" for="addAttendeeForm-description">Attendee's Email</label>
-                            <input type="email" class="form-control" rows="3" name="email"></textarea>
+    <br><br>
+    <div class="attendees_list">
+        <h3>Attendees List:</h3>
+        <h6 class="single_event_text" id="eventCount">Number of attendees: {{countAttendees}}</h6>
+        
+        {{!-- <button type="button" data-toggle="modal" data-target="#addAttendeeForm">Add Attendee</button></p> --}}
+        
+        <div class="modal fade" id="addAttendeeForm" tabindex="-1" role="dialog" aria-labelledby="addAttendeeFormLabel"
+            aria-hidden="true">
+            <form method="post" action="/addAttendee">
+                <input type="hidden" name="event_uuid" value={{event_uuid}}>
+                <div id="addAttendee" class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header text-center">
+                            <h4 class="modal-title w-100 font-weight-bold">Add Attendee</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label data-error="wrong" data-success="right" for="addAttendeeForm-description">Attendee's
+                                    Email</label>
+                                <input type="email" class="form-control" rows="3" name="email"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-center">
+                            <button class="btn btn-deep-orange">Add</button>
                         </div>
                     </div>
-                    <div class="modal-footer d-flex justify-content-center">
-                        <button class="btn btn-deep-orange">Add</button>
-                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
+        <table class="filetable table-responsive" id="attendeeTable">
+            <tr>
+                <th style="width: 20%;">Name</th>
+                <th style="width: 20%;">Email</th>
+                <th style="width: 20%;">Company</th>
+                <th style="width: 15%;">Plant Classification</th>
+                <th style="width: 15%;">Field Position</th>
+                <th><button style="width: 100%;" class="btn btn-outline-success" type="button" data-toggle="modal"
+                        data-target="#addAttendeeForm">Add Attendee</button></th>
+            </tr>
+            {{#each eventAttendees}}
+            <tr>
+                <td>{{firstName}} {{lastName}}</td>
+                <td>{{email}}</td>
+                <td>{{companyName}}</td>
+                <td>{{plantClassification}}</td>
+                <td>{{fieldPosition}}</td>
+                <td>
+                    <form method="post" action="/deleteAttendee">
+                        <input type="hidden" name="accountID" value={{account_uuid}}>
+                        <input type="hidden" name="event_uuid" value={{../event_uuid}}>
+                        <input style="width: 100%;" class="btn btn-outline-danger" type="submit" value="Delete">
+                    </form>
+                </td>
+            </tr>
+            {{/each}}
+        </table>
     </div>
-    <table>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Company</th>
-            <th></th>
-        </tr>
-        {{#each eventAttendees}}
-        <tr>
-            <td>{{firstName}} {{lastName}}</td>
-            <td>{{email}}</td>
-            <td>{{companyName}}</td>
-            <td>
-                <form method="post" action="/deleteAttendee">
-                    <input type="hidden" name="accountID" value={{account_uuid}}>
-                    <input type="hidden" name="event_uuid" value={{../event_uuid}}>
-                    <input type="submit" value="Delete">
-                </form>
-            </td>
-        </tr>
-        {{/each}}
-    </table>
+
+    
+
 </body>
 </div>
 {{> footer}}
+<script src="/js/admin/print/blob-stream.js"></script>
+<script src="/js/admin/print/pdfkit.js"></script>
+<script src="/js/admin/print/print.js"></script>
 </html>

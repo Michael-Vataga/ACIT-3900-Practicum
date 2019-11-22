@@ -13,50 +13,178 @@
         {{> menu}}
 
         <h1>{{heading}}</h1>
-        <p><h3>Admin Accounts</h3></p>
-        <table class="adminTable">
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th></th>
-            </tr>
-            {{#each admins}}
-            <tr>
-                <td class="adminTableCell">{{firstName}} {{lastName}}</td>
-                <td class="adminTableCell">{{email}}</td>
-                <td class="adminTableCell">
-                    <form method="post" action="/changeAdminStatus">
-                        <input type="hidden" name="account_uuid" value={{account_uuid}}> 
-                        <input type="hidden" name="adminStatus" value="0">
-                        <button type="submit" class="btn btn-outline-danger">Demote</button>
-                    </form>
-                </td>
-            </tr>
-            {{/each}}
-        </table>
+        <div class="superuser-account-jumbotron">
+            <h3>SuperUser Accounts</h3>
+            <table class="adminTable table-responsive filetable">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th></th>
+                </tr>
+                {{#each admins}}
+                {{#if isSU}}
+                <tr class="user_acount_table">
+                    <td style="width: 50%;" class="adminTableCell">{{firstName}} {{lastName}}</td>
+                    <td style="width: 50%;" class="adminTableCell">{{email}}</td>
+                    <td class="adminTableCell">
+                        <button type="button" class="btn btn-outline-danger admin_account_button" data-toggle="modal" data-target="#demoteSU_{{account_uuid}}" style="width: 127px">Demote</button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="demoteSU_{{account_uuid}}" tabindex="-1" role="dialog" aria-labelledby="promoteModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Demote this SuperUser to Administrator?</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="alert alert-danger">
+                                            <strong>Warning!</strong> This user will still have Administrator function.
+                                        </div>
+                                        <p>
+                                            {{firstName}} {{lastName}} will be demoted to <strong>Administrator</strong> Status.
+                                            <br><br>
+                                            Click <i>Demote</i> to continue.
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <form method="post" action="/changeSUStatus">
+                                            <input type="hidden" name="account_uuid" value={{account_uuid}}>
+                                            <input type="hidden" name="suStatus" value="0">
+                                            <button type="submit" class="btn btn-outline-danger admin_account_button">Demote</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {{/if}}
+                {{/each}}
+            </table>
+        </div>
+
         <br><br>
 
-        <p><h3>Non-Admin Accounts</h3></p>
-        <table class="nonAdminTable">
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th></th>
-            </tr>
-            {{#each nonAdmins}}
-            <tr>
-                <td class="adminTableCell">{{firstName}} {{lastName}}</td>
-                <td class="adminTableCell">{{email}}</td>
-                <td class="adminTableCell">
-                    <form method="post" action="/changeAdminStatus">
-                        <input type="hidden" name="account_uuid" value={{account_uuid}}> 
-                        <input type="hidden" name="adminStatus" value="1">
-                        <button type="submit" class="btn btn-outline-primary">Promote</button>
-                    </form>
-                </td>
-            </tr>
-            {{/each}}
-        </table>
+        <div class="admin-account-jumbotron">
+            <h3>Admin Accounts</h3>
+            <table class="adminTable table-responsive filetable">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                {{#each admins}}
+                {{#unless isSU}}
+                <tr class="user_acount_table" >
+                    <td style="width: 50%;" class="adminTableCell">{{firstName}} {{lastName}}</td>
+                    <td style="width: 50%;" class="adminTableCell">{{email}}</td>
+                    <td class="adminTableCell" style="width: 127px">
+                        <button type="button" class="btn btn-outline-primary admin_account_button" data-toggle="modal" data-target="#promoteSU_{{account_uuid}}">Promote</button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="promoteSU_{{account_uuid}}" tabindex="-1" role="dialog"
+                            aria-labelledby="promoteModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Promote this Administrator to SuperUser?</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="alert alert-warning">
+                                            <strong>Warning!</strong>
+                                        </div>
+                                        <p>
+                                            {{firstName}} {{lastName}} will be promoted to SuperUser Status.
+                                            <br>
+                                            This will allow {{firstName}} {{lastName}} to promote and demote users.
+                                            <br><br>
+                                            If this is your intended action, click <strong>Promote</strong> to continue.
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <form method="post" action="/changeSUStatus">
+                                            <input type="hidden" name="account_uuid" value={{account_uuid}}>
+                                            <input type="hidden" name="suStatus" value="1">
+                                            <button type="submit" class="btn btn-outline-primary admin_account_button">Promote</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="adminTableCell" style="width: 127px">
+                        <form method="post" action="/changeAdminStatus">
+                            <input type="hidden" name="account_uuid" value={{account_uuid}}> 
+                            <input type="hidden" name="adminStatus" value="0">
+                            <button type="submit" class="btn btn-outline-danger admin_account_button">Demote</button>
+                        </form>
+                    </td>
+                </tr>
+                {{/unless}}
+                {{/each}}
+            </table>
+        </div>
+        <br><br>
+
+        <div class="non-admin-account-jumbotron">
+            <h3 style="color: ">Non-Admin Accounts</h3>
+            <table class="adminTable table-responsive filetable">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th></th>
+                </tr>
+                {{#each nonAdmins}}
+                <tr class="user_acount_table">
+                    <td style="width: 50%;" class="adminTableCell">{{firstName}} {{lastName}}</td>
+                    <td style="width: 50%;"class="adminTableCell">{{email}}</td>
+                    <td class="adminTableCell">
+                        <button type="button" class="btn btn-outline-primary admin_account_button" data-toggle="modal" data-target="#promoteAdmin_{{account_uuid}}" style="width: 127px">Promote</button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="promoteAdmin_{{account_uuid}}" tabindex="-1" role="dialog" aria-labelledby="promoteModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Promote this User?</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="alert alert-warning">
+                                            <strong>Warning!</strong> 
+                                        </div>
+                                        {{firstName}} {{lastName}} will be promoted to Administrator Status
+                                        <br>
+                                        Click <strong>Promote</strong> to continue
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <form method="post" action="/changeAdminStatus">
+                                            <input type="hidden" name="account_uuid" value={{account_uuid}}>
+                                            <input type="hidden" name="adminStatus" value="1">
+                                            <button type="submit" class="btn btn-outline-primary admin_account_button">Promote</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {{/each}}
+            </table>
+
+            
+        </div>
     </div>
 
 </body>

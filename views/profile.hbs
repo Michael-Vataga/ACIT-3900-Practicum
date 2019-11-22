@@ -1,108 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
-    {{> head}}
+{{> head}}
+
 <body>
     {{> menu}}
     <br><br>
     <div class="container">
-    {{#if isAuthenticated}}
-        {{#compareUser profile_uuid current_uuid}}
-            <form method="post" action="/editProfile">
-                <label for="email"><b>Email Address *</b></label></p>
-                <input type="email" name="email" value={{../email}} required>
+        {{#if isAuthenticated}}
+            {{#compareUser profile_uuid current_uuid}}
+                <form method="post" action="/editProfile">
+                    <h1>{{heading}}</h1>
+                    <p><i>Please fill in the following fields.</i></p>
+                    <p><i>A * denotes required information.</i></p>
 
-                <p><label for="title"><b>Title</b></label></p>
-                <input type="text" name="title" value={{../title}}>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            {{#if failureFlag}}
+                            <p id="failedEmail">{{failureMessage}}</p>
+                            {{/if}}
+                            <label for="email"><b>Email *</b></label>
+                            <input type="email" class="form-control" name="email" required value="{{../email}}">
+                        </div>
+                        
+                        {{!-- <div class="form-group col-md-4">
+                            <label for="password"><b>Password *</b></label>
+                            <input type="password" class="form-control" name="password" id="password" minlength=6 required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="confirmPassword"><b>Confirm Password*</b></label>
+                            <input type="password" class="form-control" name="confirmPassword" id="passwordConfirm" minlength=6 required>
+                        </div> --}}
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-2">
+                            <label for="title"><b>Title</b></label>
+                            <input type="text" class="form-control" placeholder="Title" name="title" value={{../title}}>
+                        </div>
+                        <div class="form-group col">
+                            <label for="firstName"><b>First Name *</b></label>
+                            <input type="text" class="form-control" placeholder="First name" name="firstName" value="{{../firstName}}">
+                        </div>
+                        <div class="form-group col">
+                            <label for="lastName"><b>Last Name *</b></label>
+                            <input type="text" class="form-control" placeholder="Last name" name="lastName" value="{{../lastName}}">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="businessPhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"><b>Business Phone Number</b></label>
+                            <input type="tel" class="form-control" placeholder="123-456-7890" name="businessPhone" value={{../businessPhone}}>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="homePhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"><b>Home Phone Number</b></label>
+                            <input type="tel" class="form-control" placeholder="123-456-7890" name="homePhone" value={{../homePhone}}>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="cellPhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"><b>Cellular Phone Number</b></label>
+                            <input type="tel" class="form-control" placeholder="123-456-7890" name="cellPhone" value={{../cellPhone}}>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="form-group col-md-10">
+                                <label for="address"><b>Address</b></label>
+                                <input type="text" class="form-control" name="addressL1" placeholder="Street and Number (E.g. 1234 Main St)" value="{{../addressL1}}">
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label for="pc_zip"><b>Postal Code/Zip</b></label>
+                                <input type="text" class="form-control" name="pc_zip" value="{{../pc_zip}}">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="addressL2" placeholder="Apartment, suite, unit, building, floor, etc." value="{{../addressL2}}">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <input type="text" class="form-control" name="city" placeholder="City" value={{../city}}>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <select name="country" class="form-control country">
+                                    <option disabled selected value="null_value">select your country</option>
+                                    <option value="Canada">Canada</option>
+                                    <option value="United_States">United States</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <select name="provincestate" class="form-control provincestate">
+                                    <option disabled selected value="null_value">select your province</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="companyName"><b>Company Name *</b></label>
+                            <input type="text" class="form-control" name="companyName" value="{{../companyName}}" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="plantClassification"><b>Plant Classification</b></label>
+                            <select name="plantClassification" class="form-control">
+                                <option disabled selected value="null_value" {{defaultDropdown "null_value" ../plantClassification}}>select your plant classification</option>
+                                <option value="Other" {{defaultDropdown "Other" ../plantClassification}}>Other</option>
+                                <option value="1st Class" {{defaultDropdown "1st Class" ../plantClassification}}>1st Class</option>
+                                <option value="2nd Class" {{defaultDropdown "2nd Class" ../plantClassification}}>2nd Class</option>
+                                <option value="3rd Class" {{defaultDropdown "3rd Class" ../plantClassification}}>3rd Class</option>
+                                <option value="4th Class" {{defaultDropdown "4th Class" ../plantClassification}}>4th Class</option>
+                                <option value="5th Class" {{defaultDropdown "5th Class" ../plantClassification}}>5th Class</option>
+                                <option value="RPO" {{defaultDropdown "RPO" ../plantClassification}}>RPO</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="fieldPosition"><b>Field Position</b></label>
+                            <select name="fieldPosition" class="form-control">
+                                <option disabled selected value="null_value" {{defaultDropdown "null_value" ../fieldPosition}}>select your position</option>
+                                <option value="Other" {{defaultDropdown "Other" ../fieldPosition}}>Other</option>
+                                <option value="Chief Engineer" {{defaultDropdown "Chief Engineer" ../fieldPosition}}>Chief Engineer</option>
+                                <option value="Shift Engineer" {{defaultDropdown "Shift Engineer" ../fieldPosition}}>Shift Engineer</option>
+                                <option value="Operator" {{defaultDropdown "Operator" ../fieldPosition}}>Operator</option>
+                            </select>
+                        </div>
+                    </div>
 
-                <p><label for="firstName"><b>First Name *</b></label></p>
-                <input type="text" name="firstName" value={{../firstName}} required>
+                    <input type="submit" class="btn btn-outline-primary" value="Edit">
+                </form>
+                <br><hr><br>
 
-                <p><label for="lastName"><b>Last Name *</b></label></p>
-                <input type="text" name="lastName" value={{../lastName}} required>
-
-                <p><label for="companyName"><b>Company Name *</b></label></p>
-                <input type="text" name="companyName" value={{../companyName}} required>
-
-                <p><label for="division"><b>Division</b></label></p>
-                <input type="text" name="division" value={{../division}}>
-
-                <p><b>Plant Classification</b></p>
-                <select name="plantClassification">
-                    <option disabled selected value="null_value">select your plant classification</option>
-                    <option value="na">N/A</option>
-                    <option value="first">1st Class</option>
-                    <option value="second">2nd Class</option>
-                    <option value="third">3rd Class</option>
-                    <option value="fourth">4th Class</option>  
-                    <option value="fifth">5th Class</option>
-                    <option value="rpo">RPO</option>
-                </select>
-
-                <p><label for="fieldPosition"><b>Field Position</b></label></p>
-                <select name="fieldPosition">
-                    <option disabled selected value="null_value">select your position</option>
-                    <option value="na">N/A</option>
-                    <option value="chiefEngineer">Chief Engineer</option>
-                    <option value="shiftEngineer">Shift Engineer</option>
-                    <option value="operator">Operator</option>
-                </select>
-
-                <p><label for="businessPhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"><b>Business Phone Number</b> (format: 123-456-7890)</label></p>
-                <input type="tel" name="businessPhone" value={{../businessPhone}}>
-
-                <p><label for="homePhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"><b>Home phone Number</b> (format: 123-456-7890)</label></p>
-                <input type="tel" name="homePhone" value={{../homePhone}}>
-
-                <p><label for="cellPhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"><b>Cellular Phone Number</b> (format: 123-456-7890)</label></p>
-                <input type="tel" name="cellPhone" value={{../cellPhone}}>
-
-                <p><label for="address"><b>House Address</b></label></p>
-                <input type="text" name="addressL1" placeholder="Street and number" value={{../addressL1}}>
-                <input type="text" name="addressL2" placeholder="Apartment, suite, unit, building, floor, etc." value={{../addressL2}}>
-
-                <p><label for="City"><b>City</b></label></p>
-                <input type="text" name="city" value={{../city}}>
-
-                <p><b>Country</b></p>
-                <select name="country">
-                    <option disabled selected value="null_value">select your country</option>
-                    <option value="Canada">Canada</option>
-                    <option value="US">United States</option>
-                </select>
-
-                <p><b>Province/Territory</b></p>
-                <select name="province_state">
-                    <option disabled selected value="null_value">select your province</option>
-                    <option value="Alberta">Alberta</option>
-                    <option value="British Columbia">British Columbia</option>
-                    <option value="Manitoba">Manitoba</option>
-                    <option value="New Brunswick">New Brunswick</option>  
-                    <option value="Newfoundland and Labrador">Newfoundland and Labrador</option>
-                    <option value="Nova Scotia">Nova Scotia</option>  
-                    <option value="Ontario">Ontario</option>
-                    <option value="Prince Edward Island">Prince Edward Island</option>
-                    <option value="Quebec">Quebec</option>   
-                    <option value="Saskatchewan">Saskatchewan</option>
-                    <option value="Yukon">Yukon</option>
-                    <option value="Northwest Territories">Northwest Territories</option>
-                    <option value="Nunavut">Nunavut</option>
-                </select>
-
-                <p><label for="pc_zip"><b>Postal Code</b></label></p>
-                <input type="text" name="pc_zip" value={{../pc_zip}}>
-
-                <br><br>
-
-                <p><input type="submit" value="Edit">
-            </form>
+            {{else}}
+                <p>You are unable to view this profile, as you are not this user.</p>
+            {{/compareUser}}
         {{else}}
-            <p>You are unable to view this profile, as you are not this user.</p>
-        {{/compareUser}}
-    {{else}}
-    <p>Please login to see this page.</p>
-    {{/if}}
-    </div>
-</body>
-
-{{> footer}}
-</html>
+            <p>Please login to see this page.</p>
+        {{/if}}

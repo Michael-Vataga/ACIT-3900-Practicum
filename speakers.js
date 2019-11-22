@@ -2,13 +2,13 @@ const db = require("./database.js");
 
 const express = require("express");
 const router = express.Router();
-const uuidv1 = require('uuid/v1');
+const uuidv4 = require('uuid/v4');
 
 const addSpeaker = async (request, response) => {
-    let speaker_id = uuidv1();
+    let speaker_id = uuidv4();
 
-    let firstName = await request.body.firstName;
-    let lastName = await request.body.lastName;
+    let firstName = await request.body.fname;
+    let lastName = await request.body.lname;
 
     let biography = await request.body.biography;
     let topic = await request.body.topic;
@@ -27,33 +27,54 @@ const addSpeaker = async (request, response) => {
         console.log(`Added new speaker: ${firstName} ${lastName}`);
     });
 
-    return response.redirect("/admin");
-
-    // console.log(request.body);    
+    return response.redirect("/admin/webcontent/speakers");   
 };
 
-const getSpeakers = (request, response) => {
-    return new Promise((resolve, reject) => {
-        let con = db.getDb();
+/*
+ADMIN PANEL - Speaker page.
+Edits Speaker Information
+*/
+const editSpeaker = (request, response) => {
+    let fName = request.body.fname;
+    let lName = request.body.lname;
+    let topic = request.body.topic;
+    let location = request.body.location;
+    let time = request.body.time;
+    let bio = request.body.biography;
+    let speaker_id = request.body.speaker_id;
 
-        let sql = "SELECT * FROM speakers";
-        
-        con.query(sql, (err, result) => {
-            if (err) {
-                throw err;
-            }
 
-            console.log(result);
+    let con = db.getDb();
+    let sql = "UPDATE speakers SET lastName=?, firstName=?, topic=?, time=?, location=?, biography=? WHERE speaker_id=?";
+    let values = [lName, fName, topic, time, location, bio, speaker_id];
 
-            response.redirect("/admin");
-        });
+    con.query(sql, values, (err, result) => {
+        if (err) throw (err);
+
+        return response.redirect('/admin/webcontent/speakers');
     });
-
-    // console.log("reached getSpeakers");
 };
 
+/*
+ADMIN PANEL - Speaker page.
+Deletes Speaker 
+*/
+const deleteSpeaker = async (request, response) => {
+    let speaker_uuid = await request.body.speaker_uuid;
+
+    let con = db.getDb();
+    let sql = "DELETE FROM speakers WHERE speaker_id=?";
+
+    con.query(sql, speaker_uuid, (err, result) => {
+        if (err) throw (err);
+        console.log(`Deleted speaker ${speaker_uuid}`);
+
+        return response.redirect('/admin/webcontent/speakers');
+    });
+};
 
 router.post("/addSpeaker", addSpeaker);
-router.post("/getSpeakers", getSpeakers);
+router.post('/editSpeaker', editSpeaker);
+router.post('/deleteSpeaker', deleteSpeaker);
 
 module.exports = router;

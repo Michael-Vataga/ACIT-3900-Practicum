@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/admin_style.css">
+    {{> head}}
+</head>
+
+<body>
+{{> admin_menu}}
+
+<div class="maincontent">
+    {{> menu}}
+
+    <form method="post" action="/addNewUser">
+        <h1>{{heading}}</h1>
+        <p><i>A * denotes required information.</i></p>
+        <p><i>A password will automatically be generated and emailed to the user.</i></p>
+
+        <p><label for="email"><b>Email Address *</b></label></p>
+        <input type="email" name="email" required>  
+
+        <p><label for="title"><b>Title</b></label></p>
+        <input type="text" name="title">
+
+        <p><label for="firstName"><b>First Name *</b></label></p>
+        <input type="text" name="firstName" required>
+
+        <p><label for="lastName"><b>Last Name *</b></label></p>
+        <input type="text" name="lastName" required>
+
+        <p><label for="companyName"><b>Company Name *</b></label></p>
+        <input type="text" name="companyName" required>
+
+        <p><b>Plant Classification</b></p>
+        <select name="plantClassification">
+            <option disabled selected value="null_value">select your plant classification</option>
+            <option value="Other">Other</option>
+            <option value="1st Class">1st Class</option>
+            <option value="2nd Class">2nd Class</option>
+            <option value="3rd Class">3rd Class</option>
+            <option value="4th Class">4th Class</option>  
+            <option value="5th Class">5th Class</option>
+            <option value="RPO">RPO</option>
+        </select>
+
+        <p><label for="fieldPosition"><b>Field Position</b></label></p>
+        <select name="fieldPosition">
+            <option disabled selected value="null_value">select your position</option>
+            <option value="Other">Other</option>
+            <option value="Chief Engineer">Chief Engineer</option>
+            <option value="Shift Engineer">Shift Engineer</option>
+            <option value="Operator">Operator</option>
+        </select>
+
+        <p><label for="businessPhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"><b>Business Phone Number</b> (format: 123-456-7890)</label></p>
+        <input type="tel" name="businessPhone">
+
+        <p><label for="homePhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"><b>Home phone Number</b> (format: 123-456-7890)</label></p>
+        <input type="tel" name="homePhone">
+
+        <p><label for="cellPhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"><b>Cellular Phone Number</b> (format: 123-456-7890)</label></p>
+        <input type="tel" name="cellPhone">
+
+        <p><label for="address"><b>House Address</b></label></p>
+        <input type="text" name="addressL1">
+        <input type="text" name="addressL2">
+
+        <p><label for="City"><b>City</b></label></p>
+        <input type="text" name="city">
+
+        <p><b>Country</b></p>
+        <select name="country">
+            <option disabled selected value="null_value">select your country</option>
+            <option value="Canada">Canada</option>
+            <option value="US">United States</option>
+        </select>
+
+        <p><b>Province/Territory</b></p>
+        <select name="province_state">
+            <option disabled selected value="null_value">select your province</option>
+            <option value="Alberta">Alberta</option>
+            <option value="British Columbia">British Columbia</option>
+            <option value="Manitoba">Manitoba</option>
+            <option value="New Brunswick">New Brunswick</option>  
+            <option value="Newfoundland and Labrador">Newfoundland and Labrador</option>
+            <option value="Nova Scotia">Nova Scotia</option>  
+            <option value="Ontario">Ontario</option>
+            <option value="Prince Edward Island">Prince Edward Island</option>
+            <option value="Quebec">Quebec</option>   
+            <option value="Saskatchewan">Saskatchewan</option>
+            <option value="Yukon">Yukon</option>
+            <option value="Northwest Territories">Northwest Territories</option>
+            <option value="Nunavut">Nunavut</option>
+        </select>
+
+        <p><label for="pc_zip"><b>Postal Code</b></label></p>
+        <input type="text" name="pc_zip">
+
+        <br><br>
+
+        <p><input type="submit"></p>
+    </form>
+</div>
+</body>
+{{> footer}}
+</html>

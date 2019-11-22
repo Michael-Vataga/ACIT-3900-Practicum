@@ -1,139 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
+{{#if inAdminPanel}}
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/admin_style.css">
+    {{> head}}
+</head>
+{{/if}}
 
 {{> head}}
 
 <body>
+    {{#if inAdminPanel}}
+    {{> admin_menu}}
+
+    <div class="maincontent">
+        {{> menu}}
+        <form method="post" action="/addNewUser">
+    {{else}}
     {{> menu}}
     <div class="container">
         <form method="post" action="/registerUser">
+    {{/if}}
             <h1>{{heading}}</h1>
             <p><i>Please fill in the following fields.</i></p>
             <p><i>A * denotes required information.</i></p>
 
-            <p><label for="email"><b>Email Address *</b></label></p>
-            <input type="email" name="email" required>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="email"><b>Email *</b></label>
+                    <input type="email" class="form-control" name="email" required>
+                </div>
+                {{#unless inAdminPanel}}
+                <div class="form-group col-md-4">
+                    <label for="password"><b>Password *</b></label>
+                    <input type="password" class="form-control" name="password" id="password" minlength=6 required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="confirmPassword"><b>Confirm Password*</b></label>
+                    <input type="password" class="form-control" name="confirmPassword" id="passwordConfirm" minlength=6 required>
+                </div>
+                {{/unless}}
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                    <label for="title"><b>Title</b></label>
+                    <input type="text" class="form-control" placeholder="Title" name="title">
+                </div>
+                <div class="form-group col">
+                    <label for="firstName"><b>First Name *</b></label>
+                    <input type="text" class="form-control" placeholder="First name" name="firstName">
+                </div>
+                <div class="form-group col">
+                    <label for="lastName"><b>Last Name *</b></label>
+                    <input type="text" class="form-control" placeholder="Last name" name="lastName">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="businessPhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"><b>Business Phone Number</b></label>
+                    <input type="tel" class="form-control" placeholder="123-456-7890" name="businessPhone">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="homePhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"><b>Home Phone Number</b></label>
+                    <input type="tel" class="form-control" placeholder="123-456-7890" name="homePhone">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="cellPhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"><b>Cellular Phone Number</b></label>
+                    <input type="tel" class="form-control" placeholder="123-456-7890" name="cellPhone">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-row">
+                    <div class="form-group col-md-10">
+                        <label for="address"><b>Address</b></label>
+                        <input type="text" class="form-control" name="addressL1" placeholder="Street and Number (E.g. 1234 Main St)">
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="pc_zip"><b>Postal Code/Zip</b></label>
+                        <input type="text" class="form-control" name="pc_zip">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <input type="text" class="form-control" name="addressL2" placeholder="Apartment, suite, unit, building, floor, etc.">
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <input type="text" class="form-control" name="city" placeholder="City">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <select name="country" class="form-control country">
+                            <option disabled selected value="null_value">select your country</option>
+                            <option value="Canada">Canada</option>
+                            <option value="United_States">United States</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <select name="provincestate" class="form-control provincestate">
+                            <option disabled selected value="null_value">select your province</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="companyName"><b>Company Name *</b></label>
+                    <input type="text" class="form-control" name="companyName" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="plantClassification"><b>Plant Classification</b></label>
+                    <select name="plantClassification" class="form-control">
+                        <option disabled selected value="null_value">select your plant classification</option>
+                        <option value="Other">Other</option>
+                        <option value="1st Class">1st Class</option>
+                        <option value="2nd Class">2nd Class</option>
+                        <option value="3rd Class">3rd Class</option>
+                        <option value="4th Class">4th Class</option>
+                        <option value="5th Class">5th Class</option>
+                        <option value="RPO">RPO</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="fieldPosition"><b>Field Position</b></label>
+                    <select name="fieldPosition" class="form-control">
+                        <option disabled selected value="null_value">select your position</option>
+                        <option value="Other">Other</option>
+                        <option value="Chief Engineer">Chief Engineer</option>
+                        <option value="Shift Engineer">Shift Engineer</option>
+                        <option value="Operator">Operator</option>
+                    </select>
+                </div>
+            </div>
 
-            <p><label for="password"><b>Password *</b></label></p>
-            <input type="password" name="password" minlength=6 required>
-
-            <p><label for="confirmPassword"><b>Confirm Password*</b></label></p>
-            <input type="password" name="confirmPassword" minlength=6 required>
-
-            <p><label for="title"><b>Title</b></label></p>
-            <input type="text" name="title">
-
-            <p><label for="firstName"><b>First Name *</b></label></p>
-            <input type="text" name="firstName" required>
-
-            <p><label for="lastName"><b>Last Name *</b></label></p>
-            <input type="text" name="lastName" required>
-
-            <p><label for="companyName"><b>Company Name *</b></label></p>
-            <input type="text" name="companyName" required>
-
-            <p><label for="division"><b>Division</b></label></p>
-            <input type="text" name="division">
-
-            <p><b>Plant Classification</b></p>
-            <select name="plantClassification">
-                <option disabled selected value="null_value">select your plant classification</option>
-                <option value="na">N/A</option>
-                <option value="first">1st Class</option>
-                <option value="second">2nd Class</option>
-                <option value="third">3rd Class</option>
-                <option value="fourth">4th Class</option>
-                <option value="fifth">5th Class</option>
-                <option value="rpo">RPO</option>
-            </select>
-
-            <p><label for="fieldPosition"><b>Field Position</b></label></p>
-            <select name="fieldPosition">
-                <option disabled selected value="null_value">select your position</option>
-                <option value="na">N/A</option>
-                <option value="chiefEngineer">Chief Engineer</option>
-                <option value="shiftEngineer">Shift Engineer</option>
-                <option value="operator">Operator</option>
-            </select>
-
-            <p><label for="businessPhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"><b>Business Phone Number</b> (format:
-                    123-456-7890)</label></p>
-            <input type="tel" name="businessPhone">
-
-            <p><label for="homePhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"><b>Home phone Number</b> (format:
-                    123-456-7890)</label></p>
-            <input type="tel" name="homePhone">
-
-            <p><label for="cellPhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"><b>Cellular Phone Number</b> (format:
-                    123-456-7890)</label></p>
-            <input type="tel" name="cellPhone">
-
-            <p><label for="address"><b>House Address</b></label></p>
-            <input type="text" name="addressL1" placeholder="Street and number">
-            <input type="text" name="addressL2" placeholder="Apartment, suite, unit, building, floor, etc.">
-
-            <p><label for="City"><b>City</b></label></p>
-            <input type="text" name="city">
-
-            {{!-- <p><b>Country</b></p>
-    <select name="country">
-        <option disabled selected value="null_value">select your country</option>
-        <option value="Canada">Canada</option>
-        <option value="US">United States</option>
-    </select>
-
-    <p><b>Province/Territory</b></p>
-    <select name="province_state">
-        <option disabled selected value="null_value">select your province</option>
-        <option value="Alberta">Alberta</option>
-        <option value="British Columbia">British Columbia</option>
-        <option value="Manitoba">Manitoba</option>
-        <option value="New Brunswick">New Brunswick</option>  
-        <option value="Newfoundland and Labrador">Newfoundland and Labrador</option>
-        <option value="Nova Scotia">Nova Scotia</option>  
-        <option value="Ontario">Ontario</option>
-        <option value="Prince Edward Island">Prince Edward Island</option>
-        <option value="Quebec">Quebec</option>   
-        <option value="Saskatchewan">Saskatchewan</option>
-        <option value="Yukon">Yukon</option>
-        <option value="Northwest Territories">Northwest Territories</option>
-        <option value="Nunavut">Nunavut</option>
-    </select> --}}
-
-            <p><b>Country</b></p>
-            <select name="country" class="country">
-                <option disabled selected value="null_value">select your country</option>
-                <option value="Canada">Canada</option>
-                <option value="United_States">United States</option>
-            </select>
-            <br>
-            <p><b>Province/Territory</b></p>
-            <select name="provincestate" class="provincestate">
-                <option disabled selected value="null_value">select your province</option>
-                <option value="BC">British Columbia</option>
-                <option value="Ontario">Ontario</option>
-            </select>
-            <br/>
-
-            <p><label for="pc_zip"><b>Postal Code</b></label></p>
-            <input type="text" name="pc_zip">
-
-            <br><br>
-
-            <input type="checkbox" name="consent" value="consent"> I consent to distribution of my contact information
-            for networking purposes
-
-            <br><br>
-
-            <p><input type="submit"></p>
+            <button type="submit" id="submitRegister" class="btn btn-outline-primary" {{#unless inAdminPanel}}disabled{{/unless}}>Submit</button>
         </form>
     </div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+{{#unless inAdminPanel}}
+<script src="/static/js/registration.js"></script>
+{{/unless}}
 </body>
 
 {{> footer}}
-
 </html>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="/static/js/registration.js"></script>

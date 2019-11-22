@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    {{> head}}
+<body>
+{{> menu}}
+
+<div>
+
+<h1>{{heading}}</h1>
+<form method="POST" action="/sendFeedback">
+    <table class="table table-striped">
+        <tr class="headings">
+            <th></th>
+            <th>Well Below Expectations [1]</th>
+            <th>Below Expectations [2]</th>
+            <th>Met Expectations [3]</th>
+            <th>Above Expectations [4]</th>
+            <th>Well Above Expectations [5]</th>
+            <th>Not Applicable</th>
+        </tr>
+        <tr class="criteria">
+            <td>Content of Conference</td>
+            <td><input type="radio" name="content" value="1"></td>
+            <td><input type="radio" name="content" value="2"></td>
+            <td><input type="radio" name="content" value="3"></td>
+            <td><input type="radio" name="content" value="4"></td>
+            <td><input type="radio" name="content" value="5"></td>
+            <td><input type="radio" name="content" value="0"></td>
+        </tr>
+        <tr class="criteria">
+            <td>Quality of Speaker(s)</td>
+            <td><input type="radio" name="speakerQuality" value="1"></td>
+            <td><input type="radio" name="speakerQuality" value="2"></td>
+            <td><input type="radio" name="speakerQuality" value="3"></td>
+            <td><input type="radio" name="speakerQuality" value="4"></td>
+            <td><input type="radio" name="speakerQuality" value="5"></td>
+            <td><input type="radio" name="speakerQuality" value="0"></td>
+        </tr>
+        <tr class="criteria">
+            <td>Organization of Conference</td>
+            <td><input type="radio" name="organization" value="1"></td>
+            <td><input type="radio" name="organization" value="2"></td>
+            <td><input type="radio" name="organization" value="3"></td>
+            <td><input type="radio" name="organization" value="4"></td>
+            <td><input type="radio" name="organization" value="5"></td>
+            <td><input type="radio" name="organization" value="0"></td>
+        </tr>
+        <tr class="criteria">
+            <td>Format of Conference</td>
+            <td><input type="radio" name="format" value="1"></td>
+            <td><input type="radio" name="format" value="2"></td>
+            <td><input type="radio" name="format" value="3"></td>
+            <td><input type="radio" name="format" value="4"></td>
+            <td><input type="radio" name="format" value="5"></td>
+            <td><input type="radio" name="format" value="0"></td>
+        </tr>
+        <tr class="criteria">
+            <td>Overall Rating of Conference</td>
+            <td><input type="radio" name="overall_rating" value="1"></td>
+            <td><input type="radio" name="overall_rating" value="2"></td>
+            <td><input type="radio" name="overall_rating" value="3"></td>
+            <td><input type="radio" name="overall_rating" value="4"></td>
+            <td><input type="radio" name="overall_rating" value="5"></td>
+            <td><input type="radio" name="overall_rating" value="0"></td>
+        </tr>
+        <tr class="criteria">
+            <td>Relevance to your Occupation</td>
+            <td><input type="radio" name="relevance" value="1"></td>
+            <td><input type="radio" name="relevance" value="2"></td>
+            <td><input type="radio" name="relevance" value="3"></td>
+            <td><input type="radio" name="relevance" value="4"></td>
+            <td><input type="radio" name="relevance" value="5"></td>
+            <td><input type="radio" name="relevance" value="0"></td>
+        </tr>
+    </table>
+
+    <textarea class="form-control" name="comments" placeholder="Share your comments here..." maxlength="500" rows="5"></textarea>
+    <button class="btn btn-outline-primary" type="submit">Submit</button>
+</form>
+</div>
+
+</body>
+{{> footer}}
+</html>
