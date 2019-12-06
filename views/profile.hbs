@@ -38,11 +38,11 @@
                         </div>
                         <div class="form-group col">
                             <label for="firstName"><b>First Name *</b></label>
-                            <input type="text" class="form-control" placeholder="First name" name="firstName" value="{{../firstName}}">
+                            <input type="text" class="form-control" placeholder="First name" name="firstName" value="{{../firstName}}" required>
                         </div>
                         <div class="form-group col">
                             <label for="lastName"><b>Last Name *</b></label>
-                            <input type="text" class="form-control" placeholder="Last name" name="lastName" value="{{../lastName}}">
+                            <input type="text" class="form-control" placeholder="Last name" name="lastName" value="{{../lastName}}" required>
                         </div>
                     </div>
                     <div class="form-row">
@@ -80,14 +80,87 @@
                             </div>
                             <div class="form-group col-md-4">
                                 <select name="country" class="form-control country">
-                                    <option disabled selected value="null_value">select your country</option>
-                                    <option value="Canada">Canada</option>
-                                    <option value="United_States">United States</option>
+                                    <option disabled selected value="null_value">Select Country</option>
+                                    <option value="Canada" {{defaultDropdown "Canada" ../country}}>Canada</option>
+                                    <option value="United States" {{defaultDropdown "United States" ../country}}>United States</option>
+                                    <option value="Other" {{defaultDropdown "Other" ../country}}>Other</option>
                                 </select>
                             </div>
                             <div class="form-group col-md-4">
-                                <select name="provincestate" class="form-control provincestate">
-                                    <option disabled selected value="null_value">select your province</option>
+                                <select name="province_state" class="form-control provincestate">
+                                    {{#if (checkCountry "Canada" ../country)}}
+                                    <option disabled selected value="null_value">Select Province</option>
+                                    <option {{defaultDropdown "AB" ../province_state}} value="AB">Alberta</option>
+                                    <option {{defaultDropdown "BC" ../province_state}} value="BC">British Columbia</option>
+                                    <option {{defaultDropdown "MB" ../province_state}} value="MB">Manitoba</option>
+                                    <option {{defaultDropdown "NB" ../province_state}} value="NB">New Brunswick</option>
+                                    <option {{defaultDropdown "NL" ../province_state}} value="NL">Newfoundland and Labrador</option>
+                                    <option {{defaultDropdown "NS" ../province_state}} value="NS">Nova Scotia</option>
+                                    <option {{defaultDropdown "ON" ../province_state}} value="ON">Ontario</option>
+                                    <option {{defaultDropdown "PE" ../province_state}} value="PE">Prince Edward Island</option>
+                                    <option {{defaultDropdown "QC" ../province_state}} value="QC">Quebec</option>
+                                    <option {{defaultDropdown "SK" ../province_state}} value="SK">Saskatchewan</option>
+                                    <option {{defaultDropdown "YT" ../province_state}} value="YT">Yukon</option>
+                                    <option {{defaultDropdown "NT" ../province_state}} value="NT">Northwest Territories</option>
+                                    <option {{defaultDropdown "NU" ../province_state}} value="NU">Nunavut</option>
+                                    {{else if (checkCountry "United States" ../country)}}
+                                    <option disabled selected value="null_value">Select State</option>
+                                    <option {{defaultDropdown "AL" ../province_state}} value="AL">Alabama</option>
+                                    <option {{defaultDropdown "AK" ../province_state}} value="AK">Alaska</option>
+                                    <option {{defaultDropdown "AZ" ../province_state}} value="AZ">Arizona</option>
+                                    <option {{defaultDropdown "AR" ../province_state}} value="AR">Arkansas</option>
+                                    <option {{defaultDropdown "CA" ../province_state}} value="CA">California</option>
+                                    <option {{defaultDropdown "CO" ../province_state}} value="CO">Colorado</option>
+                                    <option {{defaultDropdown "CT" ../province_state}} value="CT">Connecticut</option>
+                                    <option {{defaultDropdown "DE" ../province_state}} value="DE">Delaware</option>
+                                    <option {{defaultDropdown "DC" ../province_state}} value="DC">District Of Columbia</option>
+                                    <option {{defaultDropdown "FL" ../province_state}} value="FL">Florida</option>
+                                    <option {{defaultDropdown "GA" ../province_state}} value="GA">Georgia</option>
+                                    <option {{defaultDropdown "HI" ../province_state}} value="HI">Hawaii</option>
+                                    <option {{defaultDropdown "ID" ../province_state}} value="ID">Idaho</option>
+                                    <option {{defaultDropdown "IL" ../province_state}} value="IL">Illinois</option>
+                                    <option {{defaultDropdown "IN" ../province_state}} value="IN">Indiana</option>
+                                    <option {{defaultDropdown "IA" ../province_state}} value="IA">Iowa</option>
+                                    <option {{defaultDropdown "KS" ../province_state}} value="KS">Kansas</option>
+                                    <option {{defaultDropdown "KY" ../province_state}} value="KY">Kentucky</option>
+                                    <option {{defaultDropdown "LA" ../province_state}} value="LA">Louisiana</option>
+                                    <option {{defaultDropdown "ME" ../province_state}} value="ME">Maine</option>
+                                    <option {{defaultDropdown "MD" ../province_state}} value="MD">Maryland</option>
+                                    <option {{defaultDropdown "MA" ../province_state}} value="MA">Massachusetts</option>
+                                    <option {{defaultDropdown "MI" ../province_state}} value="MI">Michigan</option>
+                                    <option {{defaultDropdown "MN" ../province_state}} value="MN">Minnesota</option>
+                                    <option {{defaultDropdown "MS" ../province_state}} value="MS">Mississippi</option>
+                                    <option {{defaultDropdown "MO" ../province_state}} value="MO">Missouri</option>
+                                    <option {{defaultDropdown "MT" ../province_state}} value="MT">Montana</option>
+                                    <option {{defaultDropdown "NE" ../province_state}} value="NE">Nebraska</option>
+                                    <option {{defaultDropdown "NV" ../province_state}} value="NV">Nevada</option>
+                                    <option {{defaultDropdown "NH" ../province_state}} value="NH">New Hampshire</option>
+                                    <option {{defaultDropdown "NJ" ../province_state}} value="NJ">New Jersey</option>
+                                    <option {{defaultDropdown "NM" ../province_state}} value="NM">New Mexico</option>
+                                    <option {{defaultDropdown "NY" ../province_state}} value="NY">New York</option>
+                                    <option {{defaultDropdown "NC" ../province_state}} value="NC">North Carolina</option>
+                                    <option {{defaultDropdown "ND" ../province_state}} value="ND">North Dakota</option>
+                                    <option {{defaultDropdown "OH" ../province_state}} value="OH">Ohio</option>
+                                    <option {{defaultDropdown "OK" ../province_state}} value="OK">Oklahoma</option>
+                                    <option {{defaultDropdown "OR" ../province_state}} value="OR">Oregon</option>
+                                    <option {{defaultDropdown "PA" ../province_state}} value="PA">Pennsylvania</option>
+                                    <option {{defaultDropdown "RI" ../province_state}} value="RI">Rhode Island</option>
+                                    <option {{defaultDropdown "SC" ../province_state}} value="SC">South Carolina</option>
+                                    <option {{defaultDropdown "SD" ../province_state}} value="SD">South Dakota</option>
+                                    <option {{defaultDropdown "TN" ../province_state}} value="TN">Tennessee</option>
+                                    <option {{defaultDropdown "TX" ../province_state}} value="TX">Texas</option>
+                                    <option {{defaultDropdown "UT" ../province_state}} value="UT">Utah</option>
+                                    <option {{defaultDropdown "VT" ../province_state}} value="VT">Vermont</option>
+                                    <option {{defaultDropdown "VA" ../province_state}} value="VA">Virginia</option>
+                                    <option {{defaultDropdown "WA" ../province_state}} value="WA">Washington</option>
+                                    <option {{defaultDropdown "WV" ../province_state}} value="WV">West Virginia</option>
+                                    <option {{defaultDropdown "WI" ../province_state}} value="WI">Wisconsin</option>
+                                    <option {{defaultDropdown "WY" ../province_state}} value="WY">Wyoming</option>
+                                    {{else if (checkCountry "Other" ../country)}}
+                                    <option {{defaultDropdown "Other" user.province_state}} value="Other">Other</option>
+                                    {{else}}
+                                    <option disabled selected value="null_value">Province/State</option>
+                                    {{/if}}
                                 </select>
                             </div>
                         </div>
@@ -132,3 +205,10 @@
         {{else}}
             <p>Please login to see this page.</p>
         {{/if}}
+    </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="/static/js/registration.js"></script>
+</body>
+{{> footer}}
+
+</html>

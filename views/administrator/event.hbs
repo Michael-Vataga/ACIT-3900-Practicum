@@ -9,15 +9,13 @@
 <body>
     {{> admin_menu}}
 
-    <div class="maincontent">
+<div class="maincontent">
 
     {{> menu}}
     
     <h1>Event Details</h1>
 
     <br>
-    
-    {{!-- <button type="button" data-toggle="modal" data-target="#editEventForm">Edit Event</button> --}}
 
     <div class="modal fade" id="editEventForm" tabindex="-1" role="dialog" aria-labelledby="editEventFormLabel" aria-hidden="true">
         <form method="post" action="/editEvent" id="editevent_form">
@@ -54,30 +52,31 @@
 
     <br>
 
-    <h3>
-        <span style="margin-left: 2%;">Event name: {{heading}}</span>
-        <button class="edit_single_event_button" type="button" data-toggle="modal" data-target="#editEventForm">Edit Event</button>
-    </h3>
-    <h5 class="single_event_text" id="eventDate">Date: {{date}}</h5>
+    <div class="event-detail-section">
+    <h3><span>{{heading}}</span></h3>
+    <button class="edit_single_event_button btn btn-success" type="button" data-toggle="modal" data-target="#editEventForm">Edit Event</button>
+    <br><br>
+    <h5 class="single_event_text" id="eventDate"><i>{{date}}</i></h5>
     <h5 class="single_event_text">Event Description:</h5>
     <div class="event_desc_box">
-        <h5 id="eventDesc">{{desc}}</h5>
+        <p id="eventDesc">{{desc}}</p>
     </div>
-
+    
     <br>
-
     <a href="#" id="printDoc" class="btn btn-outline-primary">Export Event</a>
+    </div>
+    <br>
     <div class="embed-responsive embed-responsive-16by9" style="display:none" id="iframediv">
         <iframe class="embed-responsive-item" src="" id="iframePDF" allowfullscreen></iframe>
     </div>
-    
-    <br><br>
+    <br>
     <div class="attendees_list">
-        <h3>Attendees List:</h3>
-        <h6 class="single_event_text" id="eventCount">Number of attendees: {{countAttendees}}</h6>
-        
-        {{!-- <button type="button" data-toggle="modal" data-target="#addAttendeeForm">Add Attendee</button></p> --}}
-        
+        <h3>Attendees List</h3>
+        <h5 id="eventCount"><i>Number of attendees: {{countAttendees}}</i></h6>
+
+        <button class="btn btn-success" type="button" data-toggle="modal" data-target="#addAttendeeForm">Add Attendee</button>
+        <br>
+        <br>
         <div class="modal fade" id="addAttendeeForm" tabindex="-1" role="dialog" aria-labelledby="addAttendeeFormLabel"
             aria-hidden="true">
             <form method="post" action="/addAttendee">
@@ -111,8 +110,7 @@
                 <th style="width: 20%;">Company</th>
                 <th style="width: 15%;">Plant Classification</th>
                 <th style="width: 15%;">Field Position</th>
-                <th><button style="width: 100%;" class="btn btn-outline-success" type="button" data-toggle="modal"
-                        data-target="#addAttendeeForm">Add Attendee</button></th>
+                <th></th>
             </tr>
             {{#each eventAttendees}}
             <tr>
@@ -133,12 +131,8 @@
         </table>
     </div>
 
-    
-
-</body>
-</div>
-{{> footer}}
 <script src="/js/admin/print/blob-stream.js"></script>
 <script src="/js/admin/print/pdfkit.js"></script>
 <script src="/js/admin/print/print.js"></script>
+</body>
 </html>

@@ -1,10 +1,11 @@
 const db = require('./database.js');
+const confirmationEmail = require('./confirmationEmail.js');
 
 const express = require("express");
 const router = express.Router();
 const uuidv4 = require('uuid/v4');
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const saltRounds = 10;
 
@@ -42,7 +43,7 @@ const registerUser = async (request, response) => {
         if (err) throw err;
         if (result.length > 0) {
             console.log("Error: email already exists");
-            return response.redirect("/registration");
+            return response.redirect("/registration/type");
         }
         else {
             // creates a new account
@@ -52,7 +53,18 @@ const registerUser = async (request, response) => {
             con.query(sql, values, (err, result) => {
                 if (err) throw err;
                 console.log("Number of records inserted: " + result.affectedRows);
+
+                console.log(email)
+                confirmationEmail.sendMail({ email }, function (err, data) {
+                    if (err) {
+                        console.log("Email could not be sent.")
+                    } else {
+                        console.log("Email Sent.")
+                    }
+                });
             });
+
+
 
             return response.redirect("/login");
         }

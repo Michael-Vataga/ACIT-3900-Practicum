@@ -13,13 +13,17 @@
         {{> menu}}
 
         <h1>{{heading}}</h1>
-        <br><br>
         <div class="user-account-jumbotron">
-            <button class="collapseButton btn btn-primary" type="button" data-toggle="collapse" data-target="#userFilters" aria-expanded="false" aria-controls="collapseExample">Show Filter</button>
-            <a href="/admin/adduser"/><button class="addNewUserButton btn btn-success" type="button">Add New User</button></a>
             <br><br>
+
+            <h3>User Accounts</h3>
+
+            <a href="/admin/adduser/type"/><button class="addNewUserButton btn btn-success" type="button">Add New User</button></a>
+            <button class="collapseButton btn btn-primary" type="button" data-toggle="collapse" data-target="#userFilters" aria-expanded="false" aria-controls="collapseExample">Show Filter</button>
+            <br><br>
+
             <div class="collapse" id="userFilters">
-                <p>Plant Classifications</p>
+                <p><b>Plant Classifications</b></p>
                 <input type="radio" style="margin-left: 15px;" id="all" name="plantClassification">Show All
                 <input type="radio" style="margin-left: 15px;" id="Other" name="plantClassification">Other
                 <input type="radio" style="margin-left: 15px;" id="1st Class" name="plantClassification">1st Class
@@ -29,7 +33,11 @@
                 <input type="radio" style="margin-left: 15px;" id="5th Class" name="plantClassification">5th Class
                 <input type="radio" style="margin-left: 15px;" id="RPO" name="plantClassification">RPO
             </div>
-            <h3>User Accounts</h3>
+            
+            <p><i>You are unable to delete your own account.</i></p>
+            <p><i><strong>NOTE:</strong> In order to delete an admin account, that account must be demoted first.</i></p>
+            <br>
+            
             <table class="usersTable table-responsive filetable">
                 <tr class="user_acount_table" style="background-color: white;">
                     <th>Name</th>
@@ -49,16 +57,45 @@
                     <td style="width: 15%;">{{email}}</td>
                     <td style="width: 13%;">{{companyName}}</td>
                     <td style="width: 10%;" class="plantClassification">{{plantClassification}}</td>
-                    <td style="wdith: 15%;">{{fieldPosition}}</td>
+                    <td style="width: 15%;">{{fieldPosition}}</td>
                     <td style="min-width: 50px;">{{businessPhone}}</td>
-                 
-                    <td style="width: 127px;"><a href="/admin/useraccounts/{{account_uuid}}"><button class="btn btn-outline-primary user_account_button">Edit user</button></a></td>
+                
+                    <td style="width: 127px;"><a href="/admin/useraccounts/{{account_uuid}}"><button class="btn btn-outline-primary user_account_button">Edit User</button></a></td>
 
                     <td style="width: 127px;">
-                        <form method="post" action="/deleteUser">
-                            <input type="hidden" name="account_uuid" value="{{account_uuid}}">
-                            <button type="submit" class="btn btn-outline-danger user_account_button">Delete</button>
-                        </form>
+                        <button type="button" class="admin_account_button btn btn-outline-danger" data-toggle="modal" data-target="#deleteUser_{{account_uuid}}">Delete</button>
+
+                        {{!-- CONFIRM DELETE modal --}}
+                        <div class="modal fade" id="deleteUser_{{account_uuid}}" tabindex="-1" role="dialog" aria-labelledby="deleteUserModal" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Delete this user?</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close button">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <div class="alert alert-danger">
+                                            <strong>Warning!</strong> This user will be deleted from the database!
+                                        </div>
+                                        <p>
+                                            Click <i>Delete</i> to delete <strong>{{firstName}} {{lastName}}</strong>'s account.
+                                        </p>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <form method="post" action="/deleteUser">
+                                            <input type="hidden" name="account_uuid" value="{{account_uuid}}">
+                                            <button type="submit" class="btn btn-outline-danger admin_account_button">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>    
+
                     </td>
                 </tr>
                 {{/each}}
@@ -68,5 +105,4 @@
 
     <script type="text/javascript" src="/js/admin/user_table_filter.js"></script>
 </body>
-{{> footer}}
 </html>

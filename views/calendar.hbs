@@ -5,8 +5,11 @@
 <body>
     {{> menu}}
     <br><br>
-    <div class="grid-container">
-        <iframe src="https://outlook.live.com/owa/calendar/00000000-0000-0000-0000-000000000000/46536227-71ab-4471-858b-e665117f8366/cid-4E51E7B76AB8A405/index.html" scrolling="no" width="1200" height="700" frameborder="0"></iframe>
+    <div class="container">
+        <div class="grid-container">
+            <iframe src="{{link}}" scrolling="no" width="1200" height="700" frameborder="0"></iframe>
+            {{!-- <iframe src="https://outlook.live.com/owa/calendar/00000000-0000-0000-0000-000000000000/f456cd0c-b836-4817-9ee7-10ddf32451a0/cid-333AE6D97B507300/index.html" scrolling="no" width="1200" height="700" frameborder="0"></iframe> --}}
+        </div>
     </div>
 </body>
 {{> footer}}

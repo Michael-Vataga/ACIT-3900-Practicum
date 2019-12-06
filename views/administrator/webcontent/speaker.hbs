@@ -14,10 +14,16 @@
     
         <h1>{{heading}}</h1>
 
-        <button class="btn btn-outline-success" data-toggle="modal" data-target="#newSpeakerForm">New Speaker</button>
+        <div class="admin-speaker-jumbotron">
+        <br><br>
+        
+        <h3>Current Speakers</h3>
+        
+        <button class="btn btn-success" data-toggle="modal" data-target="#newSpeakerForm">Add New Speaker</button>
+        <br><br>
         <div class="modal fade" id="newSpeakerForm{{speaker_id}}" tabindex="-1" role="dialog"
             aria-labelledby="newSpeakerFormLabel" aria-hidden="true">
-            <form method="post" action="/addSpeaker" id="newspeaker_form">
+            <form method="post" action="/addSpeaker" id="newspeaker_form" enctype="multipart/form-data">
                 <div id="newSpeaker" class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header text-center">
@@ -46,11 +52,22 @@
                             </div>
                             <div class="form-group">
                                 <label for="speakerTime">Time</label>
-                                <input type="time" class="form-control half_width" name="time" required>
+                                <input type="time" class="form-control" name="time" required>
                             </div>
                             <div class="form-group">
                                 <label data-error="wrong" data-success="right" for="newSpeakerForm-bio">Biography</label>
-                                <textarea class="form-control" rows="3" name="biography" required></textarea>
+                                <textarea class="form-control" rows="3" name="biography" maxlength="550" required></textarea>
+                                <small class="form-text text-muted">550 Character Limit.</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Speaker Image</label>
+                                <div class="custom-file">
+                                    <input type="file" name="upload" class="custom-file-input" id="upload_img" accept="image/*"><br>
+                                    <label class="custom-file-label" for="upload_img">Click to add a speaker image</label>
+                                </div>
+                                <small id="speakerImageHelp" class="form-text text-muted">
+                                    If an image is not assigned, a default image will be used as a placeholder.
+                                </small>
                             </div>
                         </div>
                         <div class="modal-footer d-flex justify-content-center">
@@ -84,9 +101,9 @@
                         <button class="btn btn-outline-primary user_account_button" type="button" data-toggle="modal" data-target="#editSpeakerForm{{speaker_id}}">Edit</button>
                         <div class="modal fade" id="editSpeakerForm{{speaker_id}}" tabindex="-1" role="dialog"
                             aria-labelledby="editSpeakerFormLabel" aria-hidden="true">
-                            <form method="post" action="/editSpeaker" id="editspeaker_form">
-                                <input type="hidden" name="speaker_id" value="{{speaker_id}}">
-                                <div id="editSpeaker" class="modal-dialog" role="document">
+                            <form method="post" action="/uploadSpeaker" id="editspeaker_form" enctype="multipart/form-data">
+                            {{!-- <form method="post" action="/editSpeaker" id="editspeaker_form"> --}}
+                                <div id="editSpeaker" class="modal-dialog" role="document" >
                                     <div class="modal-content">
                                         <div class="modal-header text-center">
                                             <h4 class="modal-title w-100 font-weight-bold">Edit Speaker</h4>
@@ -94,8 +111,18 @@
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                     </div>
-                        
+
                                     <div class="modal-body">
+                                        <div class="form-row speaker_img_container">
+                                            <img src="/images/speakers/{{imageName}}" alt="{{firstName}} {{lastName}}" class="img-thumbnail mx-auto d-block" style="max-width: 200px">
+                                            <div class="custom-file col-md-9">
+                                                <input type="file" name="upload" class="custom-file-input" id="upload_img" accept="image/*"><br>
+                                                <label class="custom-file-label" for="upload_img">Click to select speaker image</label>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <a href="/removeSpeakerImg/{{speaker_id}}/{{imageName}}" class="btn btn-danger" role="button">Remove Img</a>
+                                            </div>
+                                        </div><br>
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                 <label data-error="wrong" data-success="right" for="speakerForm-fname">First Name</label>
@@ -120,8 +147,11 @@
                                         </div>
                                         <div class="form-group">
                                             <label data-error="wrong" data-success="right" for="speakerForm-bio">Biography</label>
-                                            <textarea class="form-control" rows="3" name="biography">{{biography}}</textarea>
+                                            <textarea class="form-control" rows="3" name="biography" maxlength="550">{{biography}}</textarea>
+                                            <small class="form-text text-muted">550 Character Limit.</small>
                                         </div>
+                                        <input type="hidden" name="speaker_id" value="{{speaker_id}}">
+                                        <input type="hidden" name="current_img" value="{{imageName}}">
                                         <div class="modal-footer d-flex justify-content-center">
                                             <button class="btn btn-deep-orange">Confirm</button>
                                         </div>
@@ -135,28 +165,17 @@
 
                     <!-- Modal -->
                     <div class="modal fade" id="delete{{speaker_id}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Delete This Speaker?</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="alert alert-danger">
-                                            <strong>Danger!</strong> This action cannot be undone
-                                        </div>
-                                        {{firstName}} {{lastName}}<br>
-                                        {{time}}<br><br>
-                                        {{biography}}
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                        <form method="post" action="/deleteSpeaker" class="no_margin">
-                                            <input type="hidden" name="speaker_uuid" value="{{speaker_id}}">
-                                            <button type="submit" class="btn btn-outline-danger">Delete</button>
-                                        </form>
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Delete This Speaker?</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="alert alert-danger">
+                                        <strong>Danger!</strong> This action cannot be undone
                                     </div>
                                     {{firstName}} {{lastName}}<br>
                                     {{time}}<br><br>
@@ -164,8 +183,9 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <form method="post" action="/deleteEvent" class="no_margin">
+                                    <form method="post" action="/deleteSpeaker" class="no_margin">
                                         <input type="hidden" name="speaker_uuid" value="{{speaker_id}}">
+                                        <input type="hidden" name="image_name" value="{{imageName}}"> 
                                         <button type="submit" class="btn btn-outline-danger">Delete</button>
                                     </form>
                                 </div>
@@ -176,8 +196,10 @@
             </tr>
             {{/each}}
         </table>
+
+        </div>
+        </div>
         </div>
     </div>
 </body>
-{{> footer}}
 </html>

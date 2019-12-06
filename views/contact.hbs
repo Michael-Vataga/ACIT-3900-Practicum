@@ -2,62 +2,65 @@
 <html lang="en">
 {{> head}}
 
-<body>
+<body style="height: 71.9vh;">
     {{> menu}}
     <div class="container">
-        <form>
-            <h1> Have a question? Contact us. </h1>
-        
-            {{!-- <div class="page-container"> --}}
-            <div class="contact-container">
-                <!-- <div class="child-div">
-                        <label for="name">Full Name</label>
-                        <input id="name" name="name" type="text" />
-                        </div> -->
-        
-                <br>
-        
-                <div class="child-div">
-                    <label for="email">Email Address:</label>
-                    <input id="email" name="email" type="text" required />
-                </div>
-        
-                <br>
-        
-                <div class="child-div">
-                    <label for="subject">Subject:</label>
-                    <input id="subject" name="subject" type="text" required />
-                </div>
-        
-                {{!-- <label for="phone number" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">Phone Number</label>
-                    <input id="phone number" name="phone number" type="text" /> --}}
-        
-        
-                <br>
-        
-                {{!-- <label for="issue">What is your issue?</label>
-                    <select id="issue" name="issue">
-                        <option value="1"> General question</option>
-                        <option value="2"> Other question</option>
-                        <option value="3"> Miscellaneous</option>
-                    </select> --}}
-        
-                <div class="child-div">
-        
-                    <label for="text">Type your inquiry:</label>
-                    <textarea id="text" name="text" rows="5" cols="70" required></textarea>
-        
+        <div class="grid-container">
+            <form>
+                <h1> Have a question? Contact us. </h1>
+            
+                {{!-- <div class="page-container"> --}}
+                <div class="contact-container">
+                    <!-- <div class="child-div">
+                            <label for="name">Full Name</label>
+                            <input id="name" name="name" type="text" />
+                            </div> -->
+            
                     <br>
-        
-                    <p><input type="submit"></p>
-        
+            
+                    <div class="child-div">
+                        <label for="email">Email Address:</label>
+                        <input id="email" name="email" type="text" required />
+                    </div>
+            
+                    <br>
+            
+                    <div class="child-div">
+                        <label for="subject">Subject:</label>
+                        <input id="subject" name="subject" type="text" required />
+                    </div>
+            
+                    {{!-- <label for="phone number" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">Phone Number</label>
+                        <input id="phone number" name="phone number" type="text" /> --}}
+            
+            
+                    <br>
+            
+                    {{!-- <label for="issue">What is your issue?</label>
+                        <select id="issue" name="issue">
+                            <option value="1"> General question</option>
+                            <option value="2"> Other question</option>
+                            <option value="3"> Miscellaneous</option>
+                        </select> --}}
+            
+                    <div class="child-div">
+            
+                        <label for="text">Type your inquiry:</label>
+                        <textarea id="text" name="text" rows="5" cols="70" required></textarea>
+            
+                        <br>
+            
+                        <p><input type="submit"></p>
+            
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-    
+
 </body>
 {{> footer}}
+
 </html>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

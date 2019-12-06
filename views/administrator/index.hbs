@@ -7,60 +7,75 @@
 
 <body>
     {{> admin_menu}}
-
-
     <div class="mainlength maincontent">
         {{> menu}}
-
         <h1>{{heading}}</h1>
-            {{#each feedback}}
-            <table class="table table-striped" id="feedbackTable">
-                <tr>
-                    <th></th>
-                    <th>
-                        1 (Well Below Expectations) - 5 (Well Above Expectations)
-                        <p style="font-size: 75%;"><i>A score of "0" means "Not Applicable"</i></p>
-                    </th>
-                    <th>
-                        <form method="POST" action="/deleteFeedback">
-                            <input type="hidden" name="feedback_id" value={{feedback_id}}>
-                            <button type="submit" class="btn btn-outline-danger">Delete</button>
-                        </form> 
-                    </th>
-                </tr>
-                <tr>
-                    <th>Content of Conference</th>
-                    <td colspan="2">{{content}}</td>
-                </tr>
-                <tr>
-                    <th>Quality of Speaker(s)</th>
-                    <td colspan="2">{{speakerQuality}}</td>
-                </tr>
-                <tr>
-                    <th>Organization of Conference</th>
-                    <td colspan="2">{{organization}}</td>
-                </tr>                                                
-                <tr>
-                    <th>Format of Conference</th>
-                    <td colspan="2">{{format}}</td>
-                </tr> 
-                <tr>
-                    <th>Overall Rating of Conference</th>
-                    <td colspan="2">{{overall_rating}}</td>
-                </tr>
-                <tr>
-                    <th>Relevance to your Occupation</th>
-                    <td colspan="2">{{relevance}}</td>                        
-                </tr>
-                <tr>
-                    <th>Comments</th>
-                    <td colspan="2">{{comments}}</td>                       
-                </tr>                       
-            </table>
-            {{/each}}
+
+        <br><br>
+
+            <div class="accordion" id="feedback" style="margin: 0 2%;">
+                <div class="card">
+                    <div class="card-header" id="headingFeedback">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseFeedback" aria-expanded="true" aria-controls="collapseFeedback">
+                                Feedback
+                                <span class="badge badge-pill badge-primary">{{feedback.length}}</span>
+                            </button>
+                        </h2>
+                    </div>
+
+                    <div id="collapseFeedback" class="collapse" aria-labelledby="headingFeedback" data-parent="#feedback">
+                        <div class="card body">
+                            {{#each feedback}}
+                            <table class="table table-striped" id="feedbackTable">
+                                <tr>
+                                    <th style="width: 15%; min-width: 250px;"></th>
+                                    <th style="width: 85%;">
+                                        1 (Well Below Expectations) - 5 (Well Above Expectations)
+                                        <p style="font-size: 75%;"><i>A score of "0" means "Not Applicable"</i></p>
+                                    </th>
+                                    <th style="width: 60px;">
+                                        <form method="POST" action="/deleteFeedback" class="border-left-0">
+                                            <input type="hidden" name="feedback_id" value={{feedback_id}}>
+                                            <button type="submit" class="btn btn-outline-danger">Delete</button>
+                                        </form> 
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>Content of Conference</th>
+                                    <td colspan="2">{{content}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Quality of Speaker(s)</th>
+                                    <td colspan="2">{{speakerQuality}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Organization of Conference</th>
+                                    <td colspan="2">{{organization}}</td>
+                                </tr>                                                
+                                <tr>
+                                    <th>Format of Conference</th>
+                                    <td colspan="2">{{format}}</td>
+                                </tr> 
+                                <tr>
+                                    <th>Overall Rating of Conference</th>
+                                    <td colspan="2">{{overall_rating}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Relevance to your Occupation</th>
+                                    <td colspan="2">{{relevance}}</td>                        
+                                </tr>
+                                <tr>
+                                    <th>Comments</th>
+                                    <td colspan="2">{{comments}}</td>                       
+                                </tr>                       
+                            </table>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
     </div>   
         
 </body>
-
-{{> footer}}
 </html>

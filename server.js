@@ -15,9 +15,13 @@ const events = require("./event.js");
 const profile = require("./profile.js");
 const admin = require("./admin.js");
 const sendMail = require('./mailgun');
+const resetPassword = require('./resetpassword');
+// const confirmationEmail = require('./confirmationEmail.js');
 const speakers = require('./speakers.js');
 
 const app = express();
+
+var current_tokens = {};
 
 let server = app.listen(port, () => {
     console.log(`Server is up on the port ${port}`);
@@ -32,7 +36,7 @@ app.use('/static', express.static('public'));
 
 
 app.use(bodyParser.urlencoded({
-    extended:true
+    extended: true
 }));
 
 
@@ -91,10 +95,12 @@ app.get("/", async (request, response) => {
     let sponsorImgs = await queries.getFiles(sponsorFolder);
     let carouselFolder = './public/images/index/carousel';
     let carouselImgs = await queries.getFiles(carouselFolder);
+    let homeTitle = await queries.getHomeTitle();
 
     response.render("home.hbs", {
         title: "Home",
         heading: "Home",
+        homeTitle: homeTitle.title,
         sponsorImgs: sponsorImgs,
         carouselImgs: carouselImgs
     });
@@ -122,7 +128,6 @@ hbs.registerHelper("setActive", index => {
     }
     return "";
 });
-
 
 /*
 Compares account's isadmin with 1 or 0.
@@ -157,7 +162,7 @@ checkAuthentication = (request, response, next) => {
     if (request.isAuthenticated()) {
         return next();
     } else {
-        response.redirect('/registration');
+        response.redirect('/registration/type');
     }
 };
 
@@ -226,7 +231,8 @@ app.get("/profile/:account_uuid", checkAuthentication, async (request, response)
         country: user.country,
         city: user.city,
         province_state: user.province_state,
-        pc_zip: user.pc_zip
+        pc_zip: user.pc_zip,
+        user: user
     });
 
     hbs.registerHelper("compareUser", (profileUser, currentUser, options) => {
@@ -250,24 +256,46 @@ app.get('/about', async (request, response) => {
     let details = await queries.getRow();
 
     response.render("about.hbs", {
-        title:"About",
+        title: "About",
         heading: "About",
         details: details
 
     });
 });
 
-// Registration Page
-app.get('/registration', checkAuthentication_false, (request, response) => {
-    let inAdminPanel = false;
-
-    response.render("registration.hbs", {
-        title:"Registration",
-        heading: "Registration",
-        action: "/registerUser",
-        inAdminPanel: inAdminPanel
+// Registration Routing Page
+app.get('/registration/type', checkAuthentication_false, (request, response) => {
+    
+    response.render("registration_choose.hbs", {
+        title: "Registration",
+        heading: "Are you a..."
     });
 });
+
+// Registration Page
+app.get('/registration/type/:account_type', checkAuthentication_false, (request, response) => {
+    let inAdminPanel = false;
+    let type = request.params.account_type;
+    let type_sponsor = false;
+    let type_vendor = false;
+    let type_attendee = false;
+
+    if (type == 'sponsor') {type_sponsor = true;}
+    else if (type == 'vendor') {type_vendor = true;}
+    else if (type == 'attendee') {type_attendee = true;}
+
+    response.render("registration.hbs", {
+        title: "Registration",
+        heading: "Registration",
+        action: "/registerUser",
+        inAdminPanel: inAdminPanel,
+        type: type,
+        type_sponsor: type_sponsor,
+        type_vendor: type_vendor,
+        type_attendee: type_attendee
+    });
+});
+
 
 // Agenda Page
 app.get('/agenda', async (request, response) => {
@@ -292,17 +320,21 @@ app.get('/speaker', async (request, response) => {
 });
 
 // Calendar Page
-app.get('/calendar', (request, response) => {
+app.get('/calendar', async (request, response) => {
+    let calendar_link = await queries.getCalendar();
+    console.log(calendar_link);
+
     response.render("calendar.hbs", {
         title: "Calendar",
-        heading: "Calendar"
+        heading: "Calendar",
+        link: calendar_link
     });
 });
 
 // Contact Page
 app.get('/contact', (request, response) => {
     response.render("contact.hbs", {
-        title:"Contact",
+        title: "Contact",
         heading: "Contact"
     });
 });
@@ -342,7 +374,7 @@ app.get('/admin/events', checkAdmin, async (request, response) => {
     let today = formatDate();
     let temp_str = '';
 
-    for (let i=0; i<events.length; i++){
+    for (let i = 0; i < events.length; i++) {
         events[i].eventDate = formatDate(events[i].eventDate);
 
         temp_str = events[i].eventDescription;
@@ -356,7 +388,7 @@ app.get('/admin/events', checkAdmin, async (request, response) => {
     }
     response.render("administrator/events.hbs", {
         title: "Events",
-        heading: "Events",
+        heading: "Manage Events",
         event: events,
         today: today,
         events_isActive: true
@@ -372,7 +404,7 @@ app.get('/admin/events/:event_id', checkAdmin, async (request, response) => {
 
     let date = formatDate(eventDate);
     let today = formatDate();
-    
+
     let countAttendees = _.size(eventAttendees);
 
     response.render("administrator/event.hbs", {
@@ -394,14 +426,16 @@ app.get('/admin/webcontent/home', checkAdmin, async (request, response) => {
     let sponsorImgs = await queries.getFiles(sponsorFolder);
     let carouselFolder = './public/images/index/carousel';
     let carouselImgs = await queries.getFiles(carouselFolder);
-    
+    let homeTitle = await queries.getHomeTitle();
+
     response.render("administrator/webcontent/home.hbs", {
         title: 'Admin - Home',
         heading: 'Manage Home Page Content',
         carouselImgs: carouselImgs,
         sponsorImgs: sponsorImgs,
         webcontent_homeisActive: true,
-        webcontent_isActive: true
+        webcontent_isActive: true,
+        homeTitle: homeTitle.title
     });
 });
 
@@ -431,10 +465,10 @@ app.get('/admin/webcontent/speakers', checkAdmin, async (request, response) => {
     let speakers = await queries.getSpeakers();
     let temp = '';
 
-    for (let i=0; i<speakers.length; i++){
+    for (let i = 0; i < speakers.length; i++) {
         temp = speakers[i].biography;
 
-        if (temp.length > 100){
+        if (temp.length > 100) {
             speakers[i].biography_short = temp.substring(0, 97) + '...';
         }
         else {
@@ -450,11 +484,12 @@ app.get('/admin/webcontent/speakers', checkAdmin, async (request, response) => {
         speakers: speakers
     });
 });
-app.get('/admin/webcontent/contact', checkAdmin, async (request, response) => {
-    response.render("administrator/webcontent/contact.hbs", {
-        title: 'Admin - Contact',
-        heading: 'Manage Contact Page Content',
-        webcontent_contactisActive: true,
+
+app.get('/admin/webcontent/calendar', checkAdmin, async (request, response) => {
+    response.render("administrator/webcontent/calendar.hbs", {
+        title: 'Admin - Calendar',
+        heading: 'Manage Calendar Page Content',
+        webcontent_calendarisActive: true,
         webcontent_isActive: true
     });
 });
@@ -479,14 +514,48 @@ app.get('/admin/useraccounts', checkAdmin, async (request, response) => {
     });
 });
 
-app.get('/admin/adduser', checkAdmin, (request, response) => {
+app.get('/admin/adduser/type', checkAdmin, (request, response) => {
     let inAdminPanel = true;
 
-    response.render("registration.hbs", {
+    response.render("registration_choose.hbs", {
         title: "Add a New User",
-        heading: "Add a New User",
-        inAdminPanel: inAdminPanel
+        heading: "Who are you Adding?",
+        inAdminPanel: inAdminPanel,
+        ua_isActive: true
     });
+});
+
+app.get('/admin/adduser/:account_type', checkAdmin, (request, response) => {
+    let type = request.params.account_type;
+    let type_sponsor = false;
+    let type_vendor = false;
+    let type_attendee = false;
+
+    if (type == 'sponsor') {type_sponsor = true;}
+    else if (type == 'vendor') {type_vendor = true;}
+    else if (type == 'attendee') {type_attendee = true;}
+
+    response.render("registration.hbs", {
+        title: "Add New User",
+        heading: "Registration",
+        inAdminPanel: true,
+        type: type,
+        type_sponsor: type_sponsor,
+        type_vendor: type_vendor,
+        type_attendee: type_attendee,
+        ua_isActive: true
+    });
+});
+
+// Helper used in user registration and edit forms
+// Compares country to the form value to auto-select
+hbs.registerHelper("checkCountry", (formValue, dbValue) => {
+    if (dbValue == formValue) {
+        return true;
+    }
+    else {
+        return false;
+    }
 });
 
 app.get('/admin/useraccounts/:account_uuid', checkAdmin, async (request, response) => {
@@ -497,6 +566,17 @@ app.get('/admin/useraccounts/:account_uuid', checkAdmin, async (request, respons
             return "selected";
         } else {
             return "";
+        }
+    });
+
+    hbs.registerHelper("checkCountry", (formValue, dbValue) => {
+        console.log(formValue);
+        console.log(dbValue);
+        if (dbValue == formValue) {
+            return true;
+        }
+        else {
+            return false;
         }
     });
 
@@ -526,17 +606,89 @@ app.get('/admin/adminaccount', checkSU, async (request, response) => {
 
 //Contact Form Emails
 app.post('/email', (req, res) => {
-    const {email, subject, text} = req.body;
+    const { email, subject, text } = req.body;
     console.log(req.body);
 
-    sendMail(email, subject, text, function(err, data) {
+    sendMail(email, subject, text, function (err, data) {
         if (err) {
             res.status(500).json({ message: 'An error has occurred' });
         } else {
-            res.json({ message: 'Message sent successfully.'});
+            res.status(200).json({ message: 'Message sent successfully.' });
         }
     });
+
 });
+
+//Reset Password Page
+app.get('/forgotpassword', (request, response) => {
+    response.render("forgotpassword.hbs", {
+        title: "Forgot Password",
+        heading: "Forgot Password"
+    });
+});
+
+//Reset Password Emails
+app.post('/resetpassword', async (req, res) => {
+    console.log(`current tokens ${JSON.stringify(current_tokens)}`);
+    const { email } = req.body;
+    console.log(req.body["email"]);
+    var token = "";
+    setTimeout(() => {
+        token = resetPassword.generateToken();
+        console.log(`inside of timeout ${token}`);
+        current_tokens[`${token}`] = email;
+        resetPassword.sendMail(email, token);
+
+    }, 2000);
+    // console.log(await resetPassword.realToken);
+    // let token = resetPassword.generateToken();
+    console.log(`outside of timeout: ${resetPassword.generateToken()}`);
+
+    console.log(resetPassword.generateToken());
+
+
+
+});
+
+app.get('/resetpassword/:token', (request, response) => {
+    response.render("resetpassword.hbs", {
+        title: "Reset Password",
+        heading: "Reset Password"
+    });
+});
+
+app.post('/resetpassword/:token', (request, response) => {
+    // console.log(request.params.token);
+
+    let email = current_tokens[`${request.params.token}`];
+    let password = request.body[`password`];
+    console.log("password entered is: " + password);
+    console.log("email found: " + email);
+    resetPassword.changepassword(email, password).then((result) => {
+        console.log(`${resetPassword.changepassword()}`);
+        response.redirect('/login');
+
+    }).catch((err) => {
+        console.log(err);
+    });
+});
+
+
+// app.post('/registration', (req, res) => {
+//     const { email } = req.body;
+//     console.log(req.body);
+
+//     confirmationEmail.sendMail(email, function (err, data) {
+//         if (err) {
+//             res.status(500).json({ message: 'An error has occurred' });
+//         } else {
+//             res.status(200).json({ message: 'Message sent successfully.' });
+//         }
+//     });
+
+// });
+
+
 
 app.get('/feedback', (request, response) => {
     response.render("feedback.hbs", {

@@ -11,71 +11,82 @@
     
     <div class="maincontent">
         {{> menu}}
-    
+
         <h1>{{heading}}</h1>
 
-        <button class="btn btn-outline-primary" type="button" data-toggle="modal" data-target="#addAgendaForm">New Agenda Item</button>
-        <!-- Modal -->
-        <div class="modal fade" id="addAgendaForm" tabindex="-1" role="dialog" aria-labelledby="newAgendaFormLabel"
-            aria-hidden="true">
-            <form method="post" action="/addAgendaItem" id="event_form">
-                <div id="createAgendaItem" class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header text-center">
-                            <h4 class="modal-title w-100 font-weight-bold">Create New Agenda Item</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label data-error="wrong" data-success="right" for="newItemForm-timeStart">Start Time</label>
-                                    <input type="time" class="form-control validate" name="timeStart">
+        <br><br>
+
+        <div class="user-account-jumbotron">
+            <button class="btn btn-success" type="button" data-toggle="modal" data-target="#addAgendaForm">New Agenda Item</button>
+            <a href="#" id="printDoc_agenda" class="btn btn-outline-primary">Export Agenda</a>
+            <div class="embed-responsive embed-responsive-16by9" style="display:none" id="iframediv">
+                <iframe class="embed-responsive-item" src="" id="iframePDF" allowfullscreen></iframe>
+            </div>
+
+            <br><br>
+            
+            <!-- Modal for New Agenda Item -->
+            <div class="modal fade" id="addAgendaForm" tabindex="-1" role="dialog" aria-labelledby="newAgendaFormLabel" aria-hidden="true">
+                <form method="post" action="/addAgendaItem" id="event_form">
+                    <div id="createAgendaItem" class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <h4 class="modal-title w-100 font-weight-bold">Create New Agenda Item</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label data-error="wrong" data-success="right" for="newItemForm-timeStart">Start Time</label>
+                                        <input type="time" class="form-control validate" name="timeStart">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label data-error="wrong" data-success="right" for="newItemForm-timeEnd">End Time</label>
+                                        <input type="time" class="form-control validate" name="timeEnd">
+                                    </div>
                                 </div>
-                                <div class="form-group col-md-6">
-                                    <label data-error="wrong" data-success="right" for="newItemForm-timeEnd">End Time</label>
-                                    <input type="time" class="form-control validate" name="timeEnd">
+                                
+                                <div class="form-group">
+                                    <label data-error="wrong" data-success="right" for="newAgendaItem-description">Agenda Item Description</label>
+                                    <textarea class="form-control" rows="3" name="description"></textarea>
                                 </div>
                             </div>
-                            
-                            <div class="form-group">
-                                <label data-error="wrong" data-success="right" for="newAgendaItem-description">Agenda Item Description</label>
-                                <textarea class="form-control" rows="3" name="description"></textarea>
+                            <div class="modal-footer d-flex justify-content-center">
+                                <button class="btn btn-deep-orange">Create</button>
                             </div>
-                        </div>
-                        <div class="modal-footer d-flex justify-content-center">
-                            <button class="btn btn-deep-orange">Create</button>
                         </div>
                     </div>
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
 
-        <table class="table-responsive filetable">
-            <tr>
-                <th>Start Time</th>
-                <th>End Time</th>
-                <th>Description</th>
-                <th></th>
-            </tr>
-            {{#each agendaItems}}
-                <tr>
-                    <td>{{timeStart}}</td>
-                    <td>{{timeEnd}}</td>
-                    <td>{{description}}</td>
-                    <td style="width: 127px">
+            <table class="usersTable table-responsive filetable" id="agendaTable">
+                <tr class="user_acount_table" style="background-color: white;">
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+                {{#each agendaItems}}
+                <tr class="user_acount_table" style="background-color: white;">
+                    <td style="width: 30%;">{{timeStart}}</td>
+                    <td style="width: 30%;">{{timeEnd}}</td>
+                    <td style="width: 30%;">{{description}}</td>
+                    <td style="width: 127px" >
                         <form method="post" action="/deleteAgendaItem">
                             <input type="hidden" name="agenda_uuid" value={{agenda_uuid}}>
-                            <button type="submit" class="btn btn-outline-danger admin_account_button">Delete</button>
+                            <button style="width: 153px;" type="submit" class="btn btn-outline-danger user_account_button">Delete</button>
                         </form>
                     </td>
                 </tr>
-            {{/each}}
-        </table>
-
-        {{> footer}}
+                {{/each}}
+            </table>
+        </div>
     </div>
-</body>
 
+<script src="/js/admin/print/blob-stream.js"></script>
+<script src="/js/admin/print/pdfkit.js"></script>
+<script src="/js/admin/print/print_agenda.js"></script>    
+</body>
 </html>

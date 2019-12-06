@@ -5,7 +5,7 @@ const db = require("./database");
 
 const fs = require("fs");
 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 
 const uuidv4 = require('uuid/v4');
@@ -111,6 +111,19 @@ let getRow = () => {
     });
 };
 
+let getCalendar = () => {
+    return new Promise((resolve, reject) => {
+        let con = db.getDb();
+        
+        let sql = "SELECT * FROM calendar";
+
+        con.query(sql, (err, result) => {
+            if (err) reject(err);
+            resolve(result[0].link);
+        });
+    });
+};
+
 /*
 ADMIN PANEL - user accounts page.
 Retrives all currently-registered users.
@@ -185,7 +198,7 @@ const addNewUser = async (request, response) => {
     let temp = firstInitial + lastName + randomChars;
     let password = await bcrypt.hash(temp, saltRounds);
 
-    // FOR TESTING PURPOSES - DELETE AFTER!!
+    // TODO: FOR TESTING PURPOSES - DELETE AFTER!!
     console.log(firstInitial + lastName + randomChars);
 
     con = db.getDb();
@@ -257,19 +270,39 @@ ADMIN PANEL - user accounts page.
 Deletes user based on account_uuid.
 */
 const deleteUser = async (request, response) => {
+    let user_uuid = await request.user.account_uuid;
     let account_uuid = await request.body.account_uuid;
 
+    // Prevents deletion of own account
+    if (user_uuid == account_uuid) {
+        console.log('Cannot delete own account.');
+        return response.redirect('/admin/useraccounts');
+    }
+
     let con = db.getDb();
-    let sql = "DELETE FROM accounts WHERE account_uuid=?";
+    let sql = "SELECT isadmin, isSU FROM accounts WHERE account_uuid=?";
 
     con.query(sql, account_uuid, (err, result) => {
         if (err) {
             throw err;
         }
 
-        console.log(`User ${account_uuid} successfully deleted by admin`);
+        // Check to see if user is an admin before deletion
+        if (result[0].isadmin == 1 || result[0].isSU == 1) {
+            console.log("Cannot delete admin account - must demote first");
+        } else {
+            sql = "DELETE FROM accounts WHERE account_uuid=?";
+            
+            con.query(sql, account_uuid, (err, result) => {
+                if (err) {
+                    throw err;
+                }
 
-        return response.redirect("/admin/useraccounts");
+                console.log(`User ${account_uuid} successfully deleted by admin`);
+            });
+        }
+
+        return response.redirect('/admin/useraccounts');
     });
 };
 
@@ -515,6 +548,47 @@ const getAgendaItems = () => {
     });
 };
 
+/*
+ADMIN PANEL - Website Contents -> Home
+Changes title that is displayed on title bar on home page.
+*/
+const changeHomeTitle = async (request, response) => {
+    let homeTitle = await request.body.homeTitle;
+
+    let con = db.getDb();
+    let sql = "UPDATE homeTitle SET title=? WHERE homeTitleID=1";
+
+    con.query(sql, homeTitle, (err, result) => {
+        if (err) {
+            throw (err);
+        }
+
+        console.log(`Updated title to ${homeTitle}`);
+
+        return response.redirect('admin/webcontent/home');
+    });
+    
+};
+
+/*
+ADMIN PANEL - Website Contents -> Home
+Retrieves current title to display on home page.
+*/
+const getHomeTitle = () => {
+    return new Promise((resolve, reject) => {
+        let con = db.getDb();
+        let sql = "SELECT title FROM homeTitle WHERE homeTitleID = 1";
+
+        con.query(sql, (err, result) => {
+            if (err) {
+                reject (err);
+            }
+
+            resolve(result[0]);
+        });
+    });
+};
+
 router.post('/editUser', editUser);
 router.post('/deleteUser', deleteUser);
 router.post('/changeAdminStatus', changeAdminStatus);
@@ -524,6 +598,7 @@ router.post('/deleteFeedback', deleteFeedback);
 router.post('/addNewUser', addNewUser);
 router.post('/addAgendaItem', addAgendaItem);
 router.post('/deleteAgendaItem', deleteAgendaItem);
+router.post('/changeHomeTitle', changeHomeTitle);
 
 module.exports = {
     eventPromise: eventPromise,
@@ -533,6 +608,7 @@ module.exports = {
     getRSVPS: getRSVPS,
     getFiles: getFiles,
     getRow: getRow,
+    getCalendar: getCalendar,
     getAllUsers: getAllUsers,
     getUser: getUser,
     getSU: getSU,
@@ -540,5 +616,6 @@ module.exports = {
     getNonAdmins: getNonAdmins,
     getAllFeedback: getAllFeedback,
     getAgendaItems: getAgendaItems,
+    getHomeTitle: getHomeTitle,
     router: router
 };

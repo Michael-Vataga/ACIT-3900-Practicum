@@ -21,14 +21,14 @@
     <div class="container">
         <form method="post" action="/registerUser">
     {{/if}}
-            <h1>{{heading}}</h1>
+            <h1>{{heading}} ({{type}})</h1>
             <p><i>Please fill in the following fields.</i></p>
             <p><i>A * denotes required information.</i></p>
 
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label for="email"><b>Email *</b></label>
-                    <input type="email" class="form-control" name="email" required>
+                    <input type="email" class="form-control" name="email" id="email" required>
                 </div>
                 {{#unless inAdminPanel}}
                 <div class="form-group col-md-4">
@@ -48,11 +48,11 @@
                 </div>
                 <div class="form-group col">
                     <label for="firstName"><b>First Name *</b></label>
-                    <input type="text" class="form-control" placeholder="First name" name="firstName">
+                    <input type="text" class="form-control" placeholder="First name" name="firstName" required>
                 </div>
                 <div class="form-group col">
                     <label for="lastName"><b>Last Name *</b></label>
-                    <input type="text" class="form-control" placeholder="Last name" name="lastName">
+                    <input type="text" class="form-control" placeholder="Last name" name="lastName" required>
                 </div>
             </div>
             <div class="form-row">
@@ -92,7 +92,8 @@
                         <select name="country" class="form-control country">
                             <option disabled selected value="null_value">select your country</option>
                             <option value="Canada">Canada</option>
-                            <option value="United_States">United States</option>
+                            <option value="United States">United States</option>
+                            <option value="Other">Other</option>
                         </select>
                     </div>
                     <div class="form-group col-md-4">
@@ -107,8 +108,10 @@
                     <label for="companyName"><b>Company Name *</b></label>
                     <input type="text" class="form-control" name="companyName" required>
                 </div>
+
+                {{#if type_attendee}}
                 <div class="form-group col-md-4">
-                    <label for="plantClassification"><b>Plant Classification</b></label>
+                    <label for="plantClassification"><b>Plant Classification *</b></label>
                     <select name="plantClassification" class="form-control">
                         <option disabled selected value="null_value">select your plant classification</option>
                         <option value="Other">Other</option>
@@ -121,7 +124,7 @@
                     </select>
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="fieldPosition"><b>Field Position</b></label>
+                    <label for="fieldPosition"><b>Field Position *</b></label>
                     <select name="fieldPosition" class="form-control">
                         <option disabled selected value="null_value">select your position</option>
                         <option value="Other">Other</option>
@@ -130,6 +133,17 @@
                         <option value="Operator">Operator</option>
                     </select>
                 </div>
+            {{/if}}
+
+            {{#if type_sponsor}}
+                <input type="hidden" name="plantClassification" value="Other">
+                <input type="hidden" name="fieldPosition" value="Sponsor">
+            {{/if}}
+            {{#if type_vendor}}
+                <input type="hidden" name="plantClassification" value="Other">
+                <input type="hidden" name="fieldPosition" value="Vendor">
+            {{/if}}
+
             </div>
 
             <button type="submit" id="submitRegister" class="btn btn-outline-primary" {{#unless inAdminPanel}}disabled{{/unless}}>Submit</button>
@@ -137,10 +151,11 @@
     </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-{{#unless inAdminPanel}}
-<script src="/static/js/registration.js"></script>
-{{/unless}}
-</body>
 
-{{> footer}}
+<script src="/static/js/registration.js"></script>
+
+</body>
+{{#unless inAdminPanel}}
+    {{> footer}}
+{{/unless}}
 </html>

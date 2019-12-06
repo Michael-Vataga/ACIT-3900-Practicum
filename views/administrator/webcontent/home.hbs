@@ -17,9 +17,7 @@
 
     <br><br>
 
-    {{!-- <button type="button" data-toggle="modal" data-target="#uploadCarouselImage" class="btn btn-outline-success">Add New</button> --}}
-    <div class="modal fade" id="uploadCarouselImage" tabindex="-1" role="dialog" aria-labelledby="uploadCarouselImage"
-        aria-hidden="true">
+    <div class="modal fade" id="uploadCarouselImage" tabindex="-1" role="dialog" aria-labelledby="uploadCarouselImage" aria-hidden="true">
         <form method="post" action="/upload" enctype="multipart/form-data">
             <div id="uploadCarousel" class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -48,13 +46,24 @@
     </div>
 
     <div class="admin-home-jumbotron">
-    <h3>
-        <span>Change Carousel Image ({{carouselImgs.length}})</span>
-        <button type="button" data-toggle="modal" data-target="#uploadCarouselImage" class="btn btn-outline-success add_image_button">Add New</button>
-    </h3>
-    <table class="filetable table-responsive">
-    {{!-- <table class="image-table"> --}}
-        
+        <h3>Change Home Page Title</h3>
+        <div class="form-group">
+            <form method="POST" action="/changeHomeTitle" style="margin: 0;">
+                <input type="text" class="form-control" id="homeTitle" name="homeTitle" aria-describedby="emailHelp" placeholder="{{homeTitle}}" required>
+                <br>
+                <button type="submit" class="btn btn-outline-primary">Change Title</button>
+            </form>
+        </div>
+    </div>
+
+    <br><br>
+
+    <div class="admin-home-jumbotron">
+    <h3><span>Change Carousel Image ({{carouselImgs.length}})</span></h3>
+    <button type="button" data-toggle="modal" data-target="#uploadCarouselImage" class="btn btn-success add_image_button">Add New Carousel Image</button>
+    <br><br>
+
+    <table class="carouselTable filetable table-responsive">        
     
         {{#each carouselImgs}}
         <tr style="background-color: white;">
@@ -72,9 +81,6 @@
 
     <br><br>
     
-    {{!-- <h2>Change Sponsor Images ({{sponsorImgs.length}})</h2> --}}
-
-    {{!-- <button type="button" data-toggle="modal" data-target="#uploadSponsorImage" class="btn btn-outline-success">Add New</button> --}}
     <div class="modal fade" id="uploadSponsorImage" tabindex="-1" role="dialog" aria-labelledby="uploadSponsorImage"
         aria-hidden="true">
         <form method="post" action="/upload" enctype="multipart/form-data">
@@ -105,10 +111,10 @@
     </div>
 
     <div class="admin-home-jumbotron">
-        <h3>
-            <span>Change Sponsor Images ({{sponsorImgs.length}})</span>
-            <button type="button" data-toggle="modal" data-target="#uploadSponsorImage" class="btn btn-outline-success add_image_button">Add New</button>
-        </h3>
+        <h3><span>Change Sponsor Images ({{sponsorImgs.length}})</span></h3>
+        <button type="button" data-toggle="modal" data-target="#uploadSponsorImage" class="btn btn-success add_image_button">Add New Sponsor Image</button>
+
+        <br><br>
     <table class="filetable table-responsive">
     
         {{#each sponsorImgs}}
@@ -125,9 +131,7 @@
     </table>
     </div>
     </div>
+
+    <script type="text/javascript" src="/js/admin/webcontent/home_script.js"></script>
 </body>
-{{> footer}}
-
-<script type="text/javascript" src="/js/admin/webcontent/home_script.js"></script>
-
 </html>

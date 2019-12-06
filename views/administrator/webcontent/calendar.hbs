@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/admin_style.css">
+    {{> head}}
+</head>
+
+<body>
+    {{> admin_menu}}
+
+    <div class="maincontent">
+
+        {{> menu}}
+
+        <h1>{{heading}}</h1>
+        <br><br>
+        <h2 style="margin-left: 2%;">Change Event Page</h2>
+        <form method="POST" action="/updateCalendar" class="half_width">
+            <div class="form-group col-md-12 ">
+                <label for="calendariFrame">Calendar Link</label>
+                <textarea class="form-control" id="calendariFrame" name="calendariFrame" rows="5" required></textarea>
+                <small id="gmapsHelpBlock" class="form-text text-muted">
+                    If you're unsure of what to put in here, follow these <a href="#calendarInstructions">instructions</a>
+                </small>
+            </div>
+            <button style="float: right; margin-right: 2%;" type="submit" class="btn btn-primary">Change</button>
+        </form>
+
+        <br><br>
+        <hr>
+            <h3 id="calendarInstructions" style="margin-left: 2%;">How to Insert a New Calendar</h3>
+            <br>
+            <ol>
+                <li>Log into the <a href="https://outlook.live.com/owa/">outlook</a> account with the Calendar you would like to change to.</li>
+                <li>Click on the settings icon at the top right menu bar</li>
+                <li>Click on the "View all Outlook settings" at the bottom of the settings bar<br/>
+                    <figure class="figure">
+                    <img src="/images/calendar/instructions/instruct_1.jpg" class="figure-img img-fluid rounded img-thumbnail" width="50%" /><br>
+                    <figcaption class="figure-caption">Outlook Settings Menu</figcaption>
+                    </figure>
+                </li>
+                <li>When the "Outlook settings" menu appears, navigate to <strong>Calendar > Shared calendars</strong><br/>
+                    <figure class="figure">
+                    <img src="/images/calendar/instructions/instruct_2.jpg" class="figure-img img-fluid rounded img-thumbnail" width="50%" /><br>
+                    <figcaption class="figure-caption">Outlook All Settings Menu</figcaption>
+                </li>
+                <li>Select the calendar you wish to publish with the <strong>Can view all details</strong> option and then click on <strong>Publish</strong></li>
+                <li>You will now see an HTML link that you can click on and select the copy link<br/>
+                    <figure class="figure">
+                    <img src="/images/calendar/instructions/instruct_3.jpg" class="figure-img img-fluid rounded img-thumbnail" width="50%" /><br>
+                    <figcaption class="figure-caption">HTML Link</figcaption>
+                </li>
+                <li>Navigate back to this page and <strong>Paste (CTRL+v)</strong> into the <a href="#calendariFrame">Calendar HTML</a> Field</li>
+                <li>Click <Strong>Change</Strong></li>
+                <li>Done!</li>
+            </ol>
+            {{!-- </div> --}}
+        </hr>
+        
+    </div>
+
+</body>
+
+</html>

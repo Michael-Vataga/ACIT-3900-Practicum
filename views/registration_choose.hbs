@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+{{#if inAdminPanel}}
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/admin_style.css">
+    {{> head}}
+</head>
+{{/if}}
+
+{{> head}}
+
+<body>
+    {{#if inAdminPanel}}
+    {{> admin_menu}}
+
+    <div class="maincontent">
+        {{> menu}}
+    {{else}}
+    {{> menu}}
+    <div class="container">
+    {{/if}}
+            <h1>{{heading}}</h1>
+
+            <ul class="list-group list-group-flush" style="margin: 2%;">
+                <li class="list-group-item">
+                    {{#unless inAdminPanel}}
+                    <a href="/registration/type/sponsor">
+                    {{else}}
+                    <a href="/admin/adduser/sponsor">
+                    {{/unless}}
+                        <h5>Sponsor</h5>
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    {{#unless inAdminPanel}}
+                    <a href="/registration/type/vendor">
+                    {{else}}
+                    <a href="/admin/adduser/vendor">
+                    {{/unless}}
+                        <h5>Vendor</h5>
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    {{#unless inAdminPanel}}
+                    <a href="/registration/type/attendee">
+                    {{else}}
+                    <a href="/admin/adduser/attendee">
+                    {{/unless}}
+                        <h5>Attendee</h5>
+                    </a>
+                </li>
+            </ul>
+
+    </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</body>
+{{#unless inAdminPanel}}
+{{> footer}}
+{{/unless}}
+</html>

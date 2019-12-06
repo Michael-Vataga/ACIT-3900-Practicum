@@ -44,6 +44,10 @@
             <li class="nav-item">
                 <a class="nav-link" href="/rsvp">My Events</a>
             </li>
+            {{else}}
+            <li class="nav-item">
+                <a class="nav-link" href="/admin">Admin Panel</a>
+            </li>
             {{/unless}}
             <li class="nav-item">
                 <a class="nav-link" href="/profile/{{user.account_uuid}}">Edit Profile</a>
@@ -53,7 +57,7 @@
             </li>
             {{else}}
             <li class="nav-item">
-                <a class="nav-link" href="/registration">Register</a>
+                <a class="nav-link" href="/registration/type">Register</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/login">Login</a>

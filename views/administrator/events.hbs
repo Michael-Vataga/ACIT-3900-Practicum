@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-    
+
 <head>
     <link rel="stylesheet" type="text/css" href="/css/admin_style.css">
     {{> head}}
@@ -8,145 +8,149 @@
 
 <body>
     {{> admin_menu}}
-    
-    {{!-- without this class, content and side nav bar will overlap --}}
+
     <div class="maincontent">
         {{> menu}}
 
-    {{!-- Create New Event Form Popup --}}
-    <div>
-        <h1>
-            <span>{{heading}}</span>
-            <button style="margin-right: 2%;" class="add_event_button" type="button" data-toggle="modal" data-target="#createEventForm">Add New Event</button>
-        </h1>
-    </div>
-    <div class="modal fade" id="createEventForm" tabindex="-1" role="dialog" aria-labelledby="createEventFormLabel" aria-hidden="true">
-        <form method="post" action="/newEvent" id="event_form">
-            <div id="createEvent" class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header text-center">
-                        <h4 class="modal-title w-100 font-weight-bold">Create New Event</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label data-error="wrong" data-success="right" for="eventForm-name">Event Name</label>
-                            <input type="text" class="form-control validate" name="name">
+        <h1>{{heading}}</h1>
+        <div class="events-jumbotron">            
+            <br><br>
+
+            <h3>Events</h3>
+            {{!-- ADD EVENT button: Reveals modal --}}
+            <button class="event_button btn btn-success" type="button" data-toggle="modal" data-target="#createEventForm">Add New Event</button>
+            <br><br>
+            {{!-- ADD EVENT modal --}}
+            <div class="modal fade" id="createEventForm" tabindex="-1" role="dialog" aria-labelledby="createEventFormLabel" aria-hidden="true">
+                <form method="post" action="/newEvent" id="event_form">
+                    <div id="createEvent" class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header text-center">
+                                <h4 class="modal-title w-100 font-weight-bold">Create New Event</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label data-error="wrong" data-success="right" for="eventForm-name">Event Name</label>
+                                    <input type="text" class="form-control validate" name="name">
+                                </div>
+                                <div class="form-group">
+                                    <label data-error="wrong" data-success="right" for="eventForm-date">Event Date</label>
+                                    <input type="date" class="form-control validate" name="date" min={{today}}>
+                                </div>
+                                <div class="form-group">
+                                    <label data-error="wrong" data-success="right" for="eventForm-description">Event Description</label>
+                                    <textarea class="form-control" rows="3" name="desc"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer d-flex justify-content-center">
+                                <button class="btn btn-outline-primary">Create</button>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label data-error="wrong" data-success="right" for="eventForm-date">Event Date</label>
-                            <input type="date" class="form-control validate" name="date" min={{today}}>
-                        </div>
-                        <div class="form-group">
-                            <label data-error="wrong" data-success="right" for="eventForm-description">Event Description</label>
-                            <textarea class="form-control" rows="3" name="desc"></textarea>
-                        </div>
                     </div>
-                    <div class="modal-footer d-flex justify-content-center">
-                        <button class="btn btn-deep-orange">Create</button>
-                    </div>
-                </div>
+                </form>
             </div>
-        </form>
-    </div>
 
-    <div class="jumbotron no_background_colour">
-        <table class="event_table">
-            <tr>
-                <th class="event_text" style="width: 10%">Event Name</th>
-                <th class="event_text" style="width: 50%;">Event Description</th>
-                <th class="event_text" style="width: 100px;">Date</th>
-                <th class="event_text" style="width: 60px;"></th>
-                <th class="event_text" style="width: 60px;"></th>
-            </tr>
+            <table class="event_table table-responsive filetable">
+                <tr class="" style="background-color: white;">
+                    <th>Event Name</th>
+                    <th>Event Description</th>
+                    <th>Date</th>
+                    <th></th>
+                    <th></th>
+                </tr>
 
-            {{#each event}}
-            <tr class="event_tr">
-                <td class="event_text"><a class="event_link" href="/admin/events/{{event_uuid}}">{{eventName}}</a></td>
-                <td class="event_text"><a class="event_link" href="/admin/events/{{event_uuid}}">{{eventDescription_short}}</a></td>
-                <td class="event_text"><a class="event_link" href="/admin/events/{{event_uuid}}">{{eventDate}}</a></td>
-                <td class="event_text">
-                    <button class="edit_event_button btn btn-outline-primary" type="button" data-toggle="modal" data-target="#editEventForm{{event_uuid}}">Edit</button>
-                    <div class="modal fade" id="editEventForm{{event_uuid}}" tabindex="-1" role="dialog" aria-labelledby="editEventFormLabel" aria-hidden="true">
-                        <form method="post" action="/editEvent" id="editevent_form">
-                            <input type="hidden" name="event_uuid" value="{{event_uuid}}">
+                {{#each event}}
 
-                            <div id="editEvent" class="modal-dialog" role="document">
+                <tr class="event_tr" style="background-color: white;">
+                    <td style="width: 20%;"><a href="/admin/events/{{event_uuid}}" class="eventTableLink">{{eventName}}</a></td>
+                    <td><a href="/admin/events/{{event_uuid}}" class="eventTableLink">{{eventDescription_short}}</a></td>
+                    <td><a href="/admin/events/{{event_uuid}}" class="eventTableLink">{{eventDate}}</a></td>
+
+                    {{!-- EDIT EVENT cell --}}
+                    <td class="event_text" style="text-align: center; width: 127px;">
+                        {{!-- EDIT EVENT button: Reveals modal --}}
+                        <button class="event_button btn btn-outline-primary" type="button" data-toggle="modal" data-target="#editEventForm{{event_uuid}}">Edit Event</button>
+                        
+                        {{!-- EDIT EVENT modal --}}
+                        <div class="modal fade" id="editEventForm{{event_uuid}}" tabindex="-1" role="dialog" aria-labelledby="editEventFormLabel" aria-hidden="true">
+                            <form method="post" action="/editEvent" id="editevent_form">
+                                <input type="hidden" name="event_uuid" value="{{event_uuid}}">
+
+                                <div id="editEvent" class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header text-center">
+                                            <h4 class="modal-title w-100 font-weight-bold">Edit Event</h4>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label data-error="wrong" data-success="right" for="eventForm-name">Event Name</label>
+                                                <input type="text" class="form-control validate" name="name" value="{{eventName}}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label data-error="wrong" data-success="right" for="eventForm-date">Event Date</label>
+                                                <input type="date" class="form-control validate" name="date" value={{eventDate}} min="{{../today}}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label data-error="wrong" data-success="right" for="eventForm-description">Event Description</label>
+                                                <textarea class="form-control" rows="3" name="desc">{{eventDescription}}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer d-flex justify-content-center">
+                                            <button class="btn btn-outline-primary">Confirm</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </td>
+
+                    {{!-- DELETE EVENT cell --}}
+                    <td class="event_text" style="text-align: center; width: 127px;">
+                        {{!-- DELETE EVENT button: Reveals modal --}}
+                        <button type="button" class="event_button btn btn-outline-danger" data-toggle="modal" data-target="#delete{{event_uuid}}">Delete</button>
+                        
+                        {{!-- DELETE EVENT modal --}}
+                        <div class="modal fade" id="delete{{event_uuid}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog" role="document">
                                 <div class="modal-content">
-                                    <div class="modal-header text-center">
-                                        <h4 class="modal-title w-100 font-weight-bold">Edit Event</h4>
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Delete This Event?</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    
                                     <div class="modal-body">
-                                        <div class="form-group">
-                                            <label data-error="wrong" data-success="right" for="eventForm-name">Event Name</label>
-                                            <input type="text" class="form-control validate" name="name" value="{{eventName}}">
+                                        <div class="alert alert-danger">
+                                            <strong>Danger!</strong> This action cannot be undone
                                         </div>
-                                        <div class="form-group">
-                                            <label data-error="wrong" data-success="right" for="eventForm-date">Event Date</label>
-                                            <input type="date" class="form-control validate" name="date" value={{eventDate}} min="{{../today}}">
-                                        </div>
-                                        <div class="form-group">
-                                            <label data-error="wrong" data-success="right" for="eventForm-description">Event Description</label>
-                                            <textarea class="form-control" rows="3" name="desc">{{eventDescription}}</textarea>
-                                        </div>
+                                        {{eventName}}<br>
+                                        {{eventDate}}<br>
+                                        {{eventDescription}}
                                     </div>
-                                    <div class="modal-footer d-flex justify-content-center">
-                                        <button class="btn btn-deep-orange">Confirm</button>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        <form method="post" action="/deleteEvent" class="no_margin">
+                                            <input type="hidden" name="event_uuid" value="{{event_uuid}}">
+                                            <button type="submit" class="btn btn-outline-danger">Delete</button>
+                                        </form>
                                     </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </td>
-
-                <td class="event_text">
-                    <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#delete{{event_uuid}}">
-                        Delete
-                    </button>
-                    
-                    <!-- Modal -->
-                    <div class="modal fade" id="delete{{event_uuid}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Delete This Event?</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="alert alert-danger">
-                                        <strong>Danger!</strong> This action cannot be undone
-                                    </div>
-                                    {{eventName}}<br>
-                                    {{eventDate}}<br>
-                                    {{eventDescription}}
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <form method="post" action="/deleteEvent" class="no_margin">
-                                        <input type="hidden" name="event_uuid" value="{{event_uuid}}">
-                                        <button type="submit" class="btn btn-outline-danger">Delete</button>
-                                    </form>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
-                </td>
-            </tr>
-            {{/each}}
-        </table>
-    </div>
+                        
+                    </td>
+                </tr>
+                {{/each}}
+            </table>
+        </div>
     </div>
 
 </body>
-{{> footer}}
 </html>
