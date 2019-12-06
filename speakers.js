@@ -6,6 +6,10 @@ const uuidv4 = require('uuid/v4');
 const fs = require("fs");
 const formidable = require('formidable');
 
+/*
+ADMIN PANEL - Speaker page.
+Adds Speaker
+*/
 const addSpeaker = async (request, response) => {
     let form = new formidable.IncomingForm();
     let value_array = [];
@@ -35,7 +39,6 @@ const addSpeaker = async (request, response) => {
 
         let sql = "INSERT INTO speakers (speaker_id, firstName, lastName, biography, topic, time, location, imageName) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         let values = [speaker_id, value_array[0], value_array[1], value_array[5], value_array[2], value_array[4], value_array[3], filename];
-        // let values = [speaker_id, firstName, lastName, biography, topic, time, location];
 
         con.query(sql, values, (err, result) => {
             if (err) {
@@ -58,12 +61,14 @@ const deleteSpeaker = async (request, response) => {
     let imageName = await request.body.image_name;
 
     // removes speaker image
-    let file_path = `./public/images/speakers/${imageName}`;
-    fs.unlink(file_path, (err) => {
-        if (err) console.log(`Could not delete ${file_path}`);
+    if (imageName != 'default_speaker.png'){
+        let file_path = `./public/images/speakers/${imageName}`;
+        fs.unlink(file_path, (err) => {
+            if (err) console.log(`Could not delete ${file_path}`);
 
-        console.log(`${file_path} was deleted`);
-    });
+            console.log(`${file_path} was deleted`);
+        });
+    }
 
     // removes row from database
     let con = db.getDb();
@@ -91,6 +96,8 @@ const uploadSpeaker = (request, response) => {
 
     form.parse(request);
 
+    // loops through all fields in form
+    // assigns values to value_array variable which can be accessed in the 'end'
     form.on('field', (name, field) => {
         value_array.push(field);
     });

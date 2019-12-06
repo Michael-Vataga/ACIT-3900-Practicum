@@ -1,61 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+
+{{!-- <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"> --}}
+
 {{> head}}
+
 
 <body style="height: 71.9vh;">
     {{> menu}}
-    <div class="container">
-        <div class="grid-container">
-            <form>
-                <h1> Have a question? Contact us. </h1>
-            
-                {{!-- <div class="page-container"> --}}
-                <div class="contact-container">
-                    <!-- <div class="child-div">
-                            <label for="name">Full Name</label>
-                            <input id="name" name="name" type="text" />
-                            </div> -->
-            
-                    <br>
-            
+
+    <div id="messages" class="hide" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                aria-hidden="true"></span></button>
+        <div id="messages_content"></div>
+    </div>
+
+    <div class="grid-container">
+        <form>
+            <h1> Have a question? Contact us. </h1>
+            <br>
+
+            <div class="container">
+
+
+                
+                {{!-- 
                     <div class="child-div">
                         <label for="email">Email Address:</label>
                         <input id="email" name="email" type="text" required />
-                    </div>
+                    </div> --}}
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input id="email" class="form-control" input id="email" type="text" name="email" required value=""
+                        placeholder="Email" autofocus="autofocus" />
+                </div>
+
             
-                    <br>
-            
+                {{!-- 
                     <div class="child-div">
                         <label for="subject">Subject:</label>
                         <input id="subject" name="subject" type="text" required />
-                    </div>
-            
-                    {{!-- <label for="phone number" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">Phone Number</label>
-                        <input id="phone number" name="phone number" type="text" /> --}}
-            
-            
-                    <br>
-            
-                    {{!-- <label for="issue">What is your issue?</label>
-                        <select id="issue" name="issue">
-                            <option value="1"> General question</option>
-                            <option value="2"> Other question</option>
-                            <option value="3"> Miscellaneous</option>
-                        </select> --}}
-            
-                    <div class="child-div">
-            
-                        <label for="text">Type your inquiry:</label>
-                        <textarea id="text" name="text" rows="5" cols="70" required></textarea>
-            
-                        <br>
-            
-                        <p><input type="submit"></p>
-            
-                    </div>
+                    </div> --}}
+
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input id="subject" class="form-control" input id="email" type="text" name="subject" required
+                        value="" placeholder="Subject" autofocus="autofocus" />
                 </div>
-            </form>
-        </div>
+
+
+            
+
+
+
+                <div class="form-group">
+                    <label for="text">Type your inquiry</label>
+                    <textarea id="text" class="form-control" input id="email" type="text" name="text" rows="5" cols="70"
+                        required value="" placeholder="Your inquiry here" autofocus="autofocus"></textarea>
+                </div>
+
+
+
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit">Send Inquiry</button>
+                </div>
+
+            </div>
+        </form>
     </div>
 
 </body>
@@ -65,3 +77,4 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="/static/js/contact.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>

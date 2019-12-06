@@ -34,17 +34,70 @@
         </div>
             
         <br>
-        <div class="child_3">
-            <h1 class="our_sponsors"><span>Our Sponsors</span></h1>
-            {{#each sponsorImgs}}
-                <div class="logo_col">
-                    <img src="/images/index/sponsors/{{this}}" width="100%">
-                </div>
-            {{/each}}
-        </div>
-
     </div>
     
+    <div class="container">
+        <h1 class="font-weight-light text-center text-lg-left mt-4 mb-0">Our Sponsors</h1>
+
+        <hr class="mt-2 mb-5">
+        
+        {{#if sponsorsPlatinum.length}}
+        <p><h2>Platinum</h2></p>
+        <div class="row text-center text-lg-left">
+            {{#each sponsorsPlatinum}}
+            <div class="imageContainer col-lg-3 col-md-4 col-6">
+                <img class="sponsorImage img-fluid img-thumbnail" src="/images/index/sponsors/{{imageName}}" title="{{sponsorName}}" height=300 width=400 alt="">
+                <div class="hoverText">
+                    <p class="text"><strong>{{sponsorName}}</strong></p>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{/if}}
+        <br>
+        {{#if sponsorsGold.length}}
+        <p><h2>Gold</h2></p>
+        <div class="row text-center text-lg-left">
+            {{#each sponsorsGold}}
+            <div class="imageContainer col-lg-3 col-md-4 col-6">
+                <img class="sponsorImage img-fluid img-thumbnail" src="/images/index/sponsors/{{imageName}}" title="{{sponsorName}}" alt="">
+                <div class="hoverText">
+                    <p class="text"><strong>{{sponsorName}}</strong></p>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{/if}}
+        <br>
+        {{#if sponsorsSilver.length}}
+        <p><h2>Silver</h2></p>
+        <div class="row text-center text-lg-left">
+            {{#each sponsorsSilver}}
+            <div class="imageContainer col-lg-3 col-md-4 col-6">
+                <img class="sponsorImage img-fluid img-thumbnail" src="/images/index/sponsors/{{imageName}}" title="{{sponsorName}}" alt="">
+                <div class="hoverText">
+                    <p class="text"><strong>{{sponsorName}}</strong></p>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{/if}}
+        <br>
+        {{#if sponsorsBronze.length}}
+        <p><h2>Bronze</h2></p>
+        <div class="row text-center text-lg-left">
+            {{#each sponsorsBronze}}
+            <div class="imageContainer col-lg-3 col-md-4 col-6">
+                <img class="sponsorImage img-fluid img-thumbnail" src="/images/index/sponsors/{{imageName}}" title="{{sponsorName}}" alt="">
+                <div class="hoverText">
+                    <p class="text"><strong>{{sponsorName}}</strong></p>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{/if}}
+    </div>
+    {{> footer}}
 </body>
-{{> footer}}
+
 </html>

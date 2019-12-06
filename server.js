@@ -55,7 +55,7 @@ app.use(admin);
 app.use(queries.router);
 app.use(speakers);
 
-//Checks Account Administrator Status
+// Checks Account Administrator Status
 checkAdmin = (request, response, next) => {
     if (request.isAuthenticated()) {
         if (request.user.isadmin == 1) {
@@ -66,6 +66,7 @@ checkAdmin = (request, response, next) => {
     }
 };
 
+// Checks Account is not an administrator
 checkAdmin_false = (request, response, next) => {
     if (request.isAuthenticated()) {
         if (request.user.isadmin != 1) {
@@ -76,6 +77,8 @@ checkAdmin_false = (request, response, next) => {
     }
 };
 
+// Checks Account is a SuperUser
+// Allows access to promotion/demotion of administrator accounts
 checkSU = (request, response, next) => {
     if (request.isAuthenticated()) {
         if (request.user.isSU == 1) {
@@ -91,21 +94,28 @@ checkSU = (request, response, next) => {
 
 // Home
 app.get("/", async (request, response) => {
-    let sponsorFolder = './public/images/index/sponsors';
-    let sponsorImgs = await queries.getFiles(sponsorFolder);
+    let homeTitle = await queries.getHomeTitle();
     let carouselFolder = './public/images/index/carousel';
     let carouselImgs = await queries.getFiles(carouselFolder);
-    let homeTitle = await queries.getHomeTitle();
+    let sponsorsPlatinum = await queries.getSponsors('platinum');
+    let sponsorsGold = await queries.getSponsors('gold');
+    let sponsorsSilver = await queries.getSponsors('silver');
+    let sponsorsBronze = await queries.getSponsors('bronze');
 
     response.render("home.hbs", {
         title: "Home",
         heading: "Home",
         homeTitle: homeTitle.title,
-        sponsorImgs: sponsorImgs,
-        carouselImgs: carouselImgs
+        carouselImgs: carouselImgs,
+
+        sponsorsPlatinum: sponsorsPlatinum,
+        sponsorsGold: sponsorsGold,
+        sponsorsSilver: sponsorsSilver,
+        sponsorsBronze: sponsorsBronze
     });
 });
 
+// Helper to convert 24 hour to 12 hour
 hbs.registerHelper("convertTime", (timeString) => {
     let H = +timeString.substr(0, 2);
     let h = H % 12 || 12;
@@ -115,6 +125,7 @@ hbs.registerHelper("convertTime", (timeString) => {
     return timeString;
 });
 
+// Converts date to string
 hbs.registerHelper("convertDate", (dateString) => {
     let date = new Date(dateString);
     let new_date = date.toDateString();
@@ -122,6 +133,7 @@ hbs.registerHelper("convertDate", (dateString) => {
     return new_date;
 });
 
+// Sets selection to "active"
 hbs.registerHelper("setActive", index => {
     if (index == 0) {
         return "active";
@@ -142,6 +154,7 @@ hbs.registerHelper("isAdminStatus", (statusNum, isAdmin, options) => {
 });
 
 // Functions
+// Formats date to DB format
 function formatDate(inputDate = '') {
     let date = '';
 
@@ -157,7 +170,7 @@ function formatDate(inputDate = '') {
     return returnDate;
 }
 
-//Checks Authentication (is user logged in?)
+// Checks Authentication (is user logged in?)
 checkAuthentication = (request, response, next) => {
     if (request.isAuthenticated()) {
         return next();
@@ -166,6 +179,7 @@ checkAuthentication = (request, response, next) => {
     }
 };
 
+// Checks Authentication (makes sure user is not logged in)
 checkAuthentication_false = (request, response, next) => {
     if (!request.isAuthenticated()) {
         return next();
@@ -235,6 +249,7 @@ app.get("/profile/:account_uuid", checkAuthentication, async (request, response)
         user: user
     });
 
+    // Checks that the current user can only access their own profile page
     hbs.registerHelper("compareUser", (profileUser, currentUser, options) => {
         if (profileUser == currentUser) {
             return options.fn(this);
@@ -242,6 +257,8 @@ app.get("/profile/:account_uuid", checkAuthentication, async (request, response)
         return options.inverse(this);
     });
 
+    // Helps select the default value
+    // Default value is the value grabbed from the database
     hbs.registerHelper("defaultDropdown", (formValue, dbValue) => {
         if (dbValue == formValue) {
             return "selected";
@@ -357,7 +374,8 @@ app.get("/rsvp", checkAuthentication, checkAdmin_false, async (request, response
     });
 });
 
-//Admin Page
+// Admin Page - Landing Page
+// Displays feedback from users
 app.get('/admin', checkAdmin, async (request, response) => {
     let feedback = await queries.getAllFeedback();
 
@@ -369,6 +387,7 @@ app.get('/admin', checkAdmin, async (request, response) => {
     });
 });
 
+// Admin panel page for viewing all created events
 app.get('/admin/events', checkAdmin, async (request, response) => {
     let events = await queries.eventPromise();
     let today = formatDate();
@@ -395,6 +414,7 @@ app.get('/admin/events', checkAdmin, async (request, response) => {
     });
 });
 
+// Admin panel page for viewing and managing individual event details.
 app.get('/admin/events/:event_id', checkAdmin, async (request, response) => {
     let event = await queries.getEvent(request.params.event_id);
     let eventAttendees = await queries.getEventAttendees(request.params.event_id);
@@ -421,24 +441,36 @@ app.get('/admin/events/:event_id', checkAdmin, async (request, response) => {
     });
 });
 
+/* 
+ADMIN PAGE
+Can customize public landing page
+Title - Carousel Images - Sponsor Images
+*/
 app.get('/admin/webcontent/home', checkAdmin, async (request, response) => {
-    let sponsorFolder = './public/images/index/sponsors';
-    let sponsorImgs = await queries.getFiles(sponsorFolder);
+    let homeTitle = await queries.getHomeTitle();
     let carouselFolder = './public/images/index/carousel';
     let carouselImgs = await queries.getFiles(carouselFolder);
-    let homeTitle = await queries.getHomeTitle();
+
+    let sponsorsPlatinum = await queries.getSponsors('platinum');
+    let sponsorsGold = await queries.getSponsors('gold');
+    let sponsorsSilver = await queries.getSponsors('silver');
+    let sponsorsBronze = await queries.getSponsors('bronze');
 
     response.render("administrator/webcontent/home.hbs", {
         title: 'Admin - Home',
         heading: 'Manage Home Page Content',
         carouselImgs: carouselImgs,
-        sponsorImgs: sponsorImgs,
+        sponsorsPlatinum: sponsorsPlatinum,
+        sponsorsGold: sponsorsGold,
+        sponsorsSilver: sponsorsSilver,
+        sponsorsBronze: sponsorsBronze,
         webcontent_homeisActive: true,
         webcontent_isActive: true,
         homeTitle: homeTitle.title
     });
 });
 
+// Admin panel page that manages event about page (map).
 app.get('/admin/webcontent/about', checkAdmin, async (request, response) => {
     let details = await queries.getRow();
 
@@ -450,6 +482,8 @@ app.get('/admin/webcontent/about', checkAdmin, async (request, response) => {
         webcontent_isActive: true
     });
 });
+
+// Admin panel page for managing event's agenda.
 app.get('/admin/webcontent/agenda', checkAdmin, async (request, response) => {
     let agendaItems = await queries.getAgendaItems();
 
@@ -461,6 +495,8 @@ app.get('/admin/webcontent/agenda', checkAdmin, async (request, response) => {
         agendaItems: agendaItems
     });
 });
+
+// Admin panel page for managing event speakers.
 app.get('/admin/webcontent/speakers', checkAdmin, async (request, response) => {
     let speakers = await queries.getSpeakers();
     let temp = '';
@@ -485,6 +521,7 @@ app.get('/admin/webcontent/speakers', checkAdmin, async (request, response) => {
     });
 });
 
+// Admin panel page that edits event calendar.
 app.get('/admin/webcontent/calendar', checkAdmin, async (request, response) => {
     response.render("administrator/webcontent/calendar.hbs", {
         title: 'Admin - Calendar',
@@ -502,6 +539,7 @@ app.get('/admin/webcontent', checkAdmin, async (request, response) => {
     });
 });
 
+// Admin panel page that displays all currently registered users.
 app.get('/admin/useraccounts', checkAdmin, async (request, response) => {
     let users = await queries.getAllUsers();
 
@@ -514,6 +552,8 @@ app.get('/admin/useraccounts', checkAdmin, async (request, response) => {
     });
 });
 
+// Pre-registration page for user registration via admin panel.
+// Displays the three types of users that can be registered.
 app.get('/admin/adduser/type', checkAdmin, (request, response) => {
     let inAdminPanel = true;
 
@@ -525,6 +565,7 @@ app.get('/admin/adduser/type', checkAdmin, (request, response) => {
     });
 });
 
+// Endpoint for registering users through admin panel.
 app.get('/admin/adduser/:account_type', checkAdmin, (request, response) => {
     let type = request.params.account_type;
     let type_sponsor = false;
@@ -558,6 +599,7 @@ hbs.registerHelper("checkCountry", (formValue, dbValue) => {
     }
 });
 
+// Endpoint for individual profile pages accessed throguh admin panel.
 app.get('/admin/useraccounts/:account_uuid', checkAdmin, async (request, response) => {
     let user = await queries.getUser(request.params.account_uuid);
 
@@ -589,6 +631,7 @@ app.get('/admin/useraccounts/:account_uuid', checkAdmin, async (request, respons
     });
 });
 
+// Endpoint for managing admin accounts
 app.get('/admin/adminaccount', checkSU, async (request, response) => {
     let su = await queries.getSU();
     let admins = await queries.getAdmins();
@@ -635,19 +678,15 @@ app.post('/resetpassword', async (req, res) => {
     var token = "";
     setTimeout(() => {
         token = resetPassword.generateToken();
-        console.log(`inside of timeout ${token}`);
+        console.log(`generating token... ${token}`);
         current_tokens[`${token}`] = email;
         resetPassword.sendMail(email, token);
 
     }, 2000);
-    // console.log(await resetPassword.realToken);
-    // let token = resetPassword.generateToken();
-    console.log(`outside of timeout: ${resetPassword.generateToken()}`);
+
+    console.log(`assigned token to email: ${resetPassword.generateToken()}`);
 
     console.log(resetPassword.generateToken());
-
-
-
 });
 
 app.get('/resetpassword/:token', (request, response) => {
@@ -658,15 +697,13 @@ app.get('/resetpassword/:token', (request, response) => {
 });
 
 app.post('/resetpassword/:token', (request, response) => {
-    // console.log(request.params.token);
-
     let email = current_tokens[`${request.params.token}`];
     let password = request.body[`password`];
     console.log("password entered is: " + password);
     console.log("email found: " + email);
     resetPassword.changepassword(email, password).then((result) => {
         console.log(`${resetPassword.changepassword()}`);
-        response.redirect('/login');
+        response.redirect('/passwordchanged');
 
     }).catch((err) => {
         console.log(err);
@@ -674,22 +711,15 @@ app.post('/resetpassword/:token', (request, response) => {
 });
 
 
-// app.post('/registration', (req, res) => {
-//     const { email } = req.body;
-//     console.log(req.body);
-
-//     confirmationEmail.sendMail(email, function (err, data) {
-//         if (err) {
-//             res.status(500).json({ message: 'An error has occurred' });
-//         } else {
-//             res.status(200).json({ message: 'Message sent successfully.' });
-//         }
-//     });
-
-// });
+app.get('/passwordchanged', (request, response) => {
+    response.render("passwordchanged.hbs", {
+        title: "Password Changed",
+        heading: "Password Successfully Changed."
+    });
+});
 
 
-
+// Public feedback page, where users can provide feedback about event.
 app.get('/feedback', (request, response) => {
     response.render("feedback.hbs", {
         title: "Feedback",

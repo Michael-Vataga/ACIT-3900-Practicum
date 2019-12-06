@@ -98,6 +98,26 @@ let getFiles = folder => {
     });
 };
 
+/*
+USED IN Website Contents -> Home and Home page
+Retrieves sponsor images based on tier.
+*/
+let getSponsors = (tier) => {
+    return new Promise((resolve, reject) => {
+        let con = db.getDb();
+        let sql = "SELECT * FROM sponsors WHERE tier=?";
+
+        con.query(sql, tier, (err, result) => {
+            if (err) {
+                console.log(`Unable to retrieve sponsors of ${tier}`);
+                reject (err);
+            }
+
+            resolve(result);
+        });
+    });
+};
+
 let getRow = () => {
     return new Promise((resolve, reject) => {
         let con = db.getDb();
@@ -608,6 +628,7 @@ module.exports = {
     getRSVPS: getRSVPS,
     getFiles: getFiles,
     getRow: getRow,
+    getSponsors: getSponsors,
     getCalendar: getCalendar,
     getAllUsers: getAllUsers,
     getUser: getUser,

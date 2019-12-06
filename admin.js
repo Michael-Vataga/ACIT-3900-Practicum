@@ -1,6 +1,7 @@
 const formidable = require('formidable');
 const express = require("express");
 const fs = require("fs");
+const uuidv4 = require('uuid/v4');
 
 const db = require("./database.js");
 
@@ -43,6 +44,119 @@ const deleteFile = async (request, response) => {
     });
 
     response.redirect('/admin/webcontent/home');
+};
+
+// adds sponsors
+// used in admin/webcontent/home
+const uploadSponsor = (request, response) => {
+    let form = new formidable.IncomingForm();
+    let path = './public/images/index/sponsors/';
+    let value_array = [];
+    let sponsor_id = uuidv4();
+    let file_id = uuidv4();
+    let filename = '';
+
+    form.parse(request);
+
+    form.on('field', (name, field) => {
+        value_array.push(field);
+    });
+
+    form.on('fileBegin', (name, file) => {
+        let name_split = (file.name).split(".");
+        filename = file_id + "." + name_split[name_split.length - 1];
+        file.path = path + filename;
+    });
+
+    form.on('end', () => {
+        let con = db.getDb();
+        let sql = "INSERT INTO sponsors (sponsorID, imageName, tier, sponsorName) VALUES(?, ?, ?, ?)";
+        let values = [sponsor_id, filename, value_array[1], value_array[0]];
+
+        con.query(sql, values, (err, result) => {
+            if (err) console.log("unable to insert sponsor into DB");
+
+            console.log("Successfully added sponsor to DB");
+        });
+    });
+
+    return response.redirect("/admin/webcontent/home#sponsorTitle");
+};
+
+const editSponsor = (request, response) => {
+    let form = new formidable.IncomingForm(),
+        value_array = [];
+    let uuid = uuidv4();
+    let path = './public/images/index/sponsors/';
+    let filename = '';
+
+    form.parse(request);
+
+    form.on('field', (name, field) => {
+        value_array.push(field);
+    });
+
+    form.on('fileBegin', (name, file) => {
+        if (file.name != '') {
+            let name_split = (file.name).split(".");
+            filename = uuid + "." + name_split[name_split.length - 1];
+            file.path = path + filename;
+        }
+    });
+
+    form.on('end', () => {
+        // if no new image is uploaded
+        if (filename == '') {
+            console.log('keep old img, no change necessary');
+            filename = value_array[3];
+        } 
+        // else if there is a new image
+        else {
+            console.log('delete old img, swap in new');
+
+            // removes image from folder
+            let file_path = path + value_array[3];
+            fs.unlink(file_path, (err) => {
+                if (err) console.log(`Could not delete ${file_path}`);
+
+                console.log(`${file_path} was deleted`);
+            });
+        }
+
+        let con = db.getDb();
+        let sql = "UPDATE sponsors SET imageName=?, tier=?, sponsorName=? WHERE sponsorID=?";
+        let values = [filename, value_array[1], value_array[0], value_array[2]];
+
+        con.query(sql, values, (err, result) => {
+            if (err) throw (err);
+        });
+    });
+
+    response.redirect('/admin/webcontent/home#sponsorTitle');
+};
+
+const deleteSponsor = async (request, response) => {
+    let sponsorID = await request.body.sponsor_id;
+    let imageName = await request.body.image_name;
+
+    let con = db.getDb();
+    let sql = "DELETE FROM sponsors WHERE sponsorID=?";
+    con.query(sql, sponsorID, (err, result) => {
+        if (err) {
+            throw err;
+        }
+
+        console.log(`Sponsor ${sponsorID} deleted by admin`);
+    });
+
+    let file_path = `./public/images/index/sponsors/${imageName}`;
+    fs.unlink(file_path, (err) => {
+        if(err) console.log(`Could not remove ${file_path}`);
+
+        console.log(`${file_path} was successfully deleted`);
+    });
+
+    return response.redirect('admin/webcontent/home#sponsorTable');
 };
 
 
@@ -108,6 +222,9 @@ const updateCalendar = async (request, response) => {
 
 router.post("/upload", upload);
 router.post("/deleteFile", deleteFile);
+router.post("/uploadSponsor", uploadSponsor);
+router.post("/editSponsor", editSponsor);
+router.post("/deleteSponsor", deleteSponsor);
 router.post("/updateAbout", updateAbout);
 router.post("/updateCalendar", updateCalendar);
 

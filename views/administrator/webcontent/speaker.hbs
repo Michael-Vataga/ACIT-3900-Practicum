@@ -99,8 +99,7 @@
                     <td style="width: 50%;">{{biography_short}}</td>
                     <td style="width: 140px;">
                         <button class="btn btn-outline-primary user_account_button" type="button" data-toggle="modal" data-target="#editSpeakerForm{{speaker_id}}">Edit</button>
-                        <div class="modal fade" id="editSpeakerForm{{speaker_id}}" tabindex="-1" role="dialog"
-                            aria-labelledby="editSpeakerFormLabel" aria-hidden="true">
+                        <div class="modal fade" id="editSpeakerForm{{speaker_id}}" tabindex="-1" role="dialog" aria-labelledby="editSpeakerFormLabel" aria-hidden="true">
                             <form method="post" action="/uploadSpeaker" id="editspeaker_form" enctype="multipart/form-data">
                             {{!-- <form method="post" action="/editSpeaker" id="editspeaker_form"> --}}
                                 <div id="editSpeaker" class="modal-dialog" role="document" >
@@ -130,12 +129,12 @@
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label data-error="wrong" data-success="right" for="speakerForm-lname">Last Name</label>
-                                                <input type="text" class="form-control validate" name="lname" value={{lastName}}>
+                                                <input type="text" class="form-control validate" name="lname" value="{{lastName}}">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label data-error="wrong" data-success="right" for="speakerForm-topic">Topic</label>
-                                            <input type="text" class="form-control validate" name="topic" value={{topic}}>
+                                            <input type="text" class="form-control validate" name="topic" value="{{topic}}">
                                         </div>
                                         <div class="form-group">
                                             <label data-error="wrong" data-success="right" for="speakerForm-location">Location</label>

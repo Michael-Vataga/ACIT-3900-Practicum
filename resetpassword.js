@@ -125,6 +125,7 @@ const sendMail = (email, realToken) => {
         text: "You requested a link to reset your password.\n\n" +
             'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
             `http://localhost:8080/resetpassword/${realToken}\n\n` +
+            // `https://ipeevent.commons.bcit.ca/resetpassword/${realToken}\n\n` +
             'If you did not request this, please ignore this email and your password will remain unchanged.\n'
     };
 

@@ -1,5 +1,4 @@
 $('form').on('submit', (e) => {
-    window.location.href = "http://localhost:8080/login";
     e.preventDefault();
 
     const email = $('#email').val().trim();
