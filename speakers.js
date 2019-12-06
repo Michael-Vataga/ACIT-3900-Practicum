@@ -35,7 +35,6 @@ const addSpeaker = async (request, response) => {
 
         let sql = "INSERT INTO speakers (speaker_id, firstName, lastName, biography, topic, time, location, imageName) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         let values = [speaker_id, value_array[0], value_array[1], value_array[5], value_array[2], value_array[4], value_array[3], filename];
-        // let values = [speaker_id, firstName, lastName, biography, topic, time, location];
 
         con.query(sql, values, (err, result) => {
             if (err) {
