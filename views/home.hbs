@@ -40,7 +40,8 @@
         <h1 class="font-weight-light text-center text-lg-left mt-4 mb-0">Our Sponsors</h1>
 
         <hr class="mt-2 mb-5">
-            
+        
+        {{#if sponsorsPlatinum.length}}
         <p><h2>Platinum</h2></p>
         <div class="row text-center text-lg-left">
             {{#each sponsorsPlatinum}}
@@ -52,7 +53,9 @@
             </div>
             {{/each}}
         </div>
+        {{/if}}
         <br>
+        {{#if sponsorsGold.length}}
         <p><h2>Gold</h2></p>
         <div class="row text-center text-lg-left">
             {{#each sponsorsGold}}
@@ -64,7 +67,9 @@
             </div>
             {{/each}}
         </div>
+        {{/if}}
         <br>
+        {{#if sponsorsSilver.length}}
         <p><h2>Silver</h2></p>
         <div class="row text-center text-lg-left">
             {{#each sponsorsSilver}}
@@ -76,7 +81,9 @@
             </div>
             {{/each}}
         </div>
+        {{/if}}
         <br>
+        {{#if sponsorsBronze.length}}
         <p><h2>Bronze</h2></p>
         <div class="row text-center text-lg-left">
             {{#each sponsorsBronze}}
@@ -88,6 +95,7 @@
             </div>
             {{/each}}
         </div>
+        {{/if}}
     </div>
     {{> footer}}
 </body>
