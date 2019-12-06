@@ -91,18 +91,24 @@ checkSU = (request, response, next) => {
 
 // Home
 app.get("/", async (request, response) => {
-    let sponsorFolder = './public/images/index/sponsors';
-    let sponsorImgs = await queries.getFiles(sponsorFolder);
+    let homeTitle = await queries.getHomeTitle();
     let carouselFolder = './public/images/index/carousel';
     let carouselImgs = await queries.getFiles(carouselFolder);
-    let homeTitle = await queries.getHomeTitle();
+    let sponsorsPlatinum = await queries.getSponsors('platinum');
+    let sponsorsGold = await queries.getSponsors('gold');
+    let sponsorsSilver = await queries.getSponsors('silver');
+    let sponsorsBronze = await queries.getSponsors('bronze');
 
     response.render("home.hbs", {
         title: "Home",
         heading: "Home",
         homeTitle: homeTitle.title,
-        sponsorImgs: sponsorImgs,
-        carouselImgs: carouselImgs
+        carouselImgs: carouselImgs,
+
+        sponsorsPlatinum: sponsorsPlatinum,
+        sponsorsGold: sponsorsGold,
+        sponsorsSilver: sponsorsSilver,
+        sponsorsBronze: sponsorsBronze
     });
 });
 
@@ -421,18 +427,30 @@ app.get('/admin/events/:event_id', checkAdmin, async (request, response) => {
     });
 });
 
+
+/* 
+ADMIN PAGE
+Can customize public landing page
+Title - Carousel Images - Sponsor Images
+*/
 app.get('/admin/webcontent/home', checkAdmin, async (request, response) => {
-    let sponsorFolder = './public/images/index/sponsors';
-    let sponsorImgs = await queries.getFiles(sponsorFolder);
+    let homeTitle = await queries.getHomeTitle();
     let carouselFolder = './public/images/index/carousel';
     let carouselImgs = await queries.getFiles(carouselFolder);
-    let homeTitle = await queries.getHomeTitle();
+
+    let sponsorsPlatinum = await queries.getSponsors('platinum');
+    let sponsorsGold = await queries.getSponsors('gold');
+    let sponsorsSilver = await queries.getSponsors('silver');
+    let sponsorsBronze = await queries.getSponsors('bronze');
 
     response.render("administrator/webcontent/home.hbs", {
         title: 'Admin - Home',
         heading: 'Manage Home Page Content',
         carouselImgs: carouselImgs,
-        sponsorImgs: sponsorImgs,
+        sponsorsPlatinum: sponsorsPlatinum,
+        sponsorsGold: sponsorsGold,
+        sponsorsSilver: sponsorsSilver,
+        sponsorsBronze: sponsorsBronze,
         webcontent_homeisActive: true,
         webcontent_isActive: true,
         homeTitle: homeTitle.title

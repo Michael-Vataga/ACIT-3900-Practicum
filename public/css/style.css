@@ -57,7 +57,7 @@ form {
 .parent {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: 100px repeat(4, 1fr);
+    grid-template-rows: 100px repeat(2, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
     
@@ -102,7 +102,7 @@ form {
         justify-content: center;
     }
     .child_2 img {
-        width: 100%;
+
         height: auto;
         float: right;
         position: relative;
@@ -114,9 +114,10 @@ form {
 }
 
 /*Sponsors css*/
-    .child_3 {
-        grid-area: 4 / 1 / 5 / 6;
-    }  
+.child_3 {
+    grid-area: 4 / 1 / 4 / 6;
+} 
+
 .logo_col {
     float: left;
     width: 25%;
@@ -137,6 +138,40 @@ form {
     background: #095E94;
     padding:0 15px;
     color: white;
+}
+
+.sponsorImage {
+    opacity: 1;
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: .5s ease;
+    backface-visibility: hidden;
+}
+
+.hoverText {
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.imageContainer:hover .sponsorImage {
+    opacity: 0.4;
+}
+
+.imageContainer:hover .hoverText {
+    opacity: 1;
+}
+
+.text {
+    color: black;
+    font-size: 16px;
+    padding: 16px 32px;
 }
 
 /*--------------*/
@@ -173,6 +208,7 @@ form {
 .footer-p {
     color: white;
     font-size: 10.5px;
+    bottom: 0;
 }
 
 .fa {
